@@ -11,6 +11,8 @@
 
 ## 1. What the 2018 model does (one-page summary)
 
+> Document order: sections 1 and 2 describe the model and its data; sections 3 and 4 are the review proper (SWOT and gap analysis); sections 5 to 9 give supporting detail, comparators and options; sections 10 and 11 record decisions and the resulting redesign.
+
 The model is a **grid-based, network-distance, composite accessibility index**. In other cities this family of methods is called a *composite accessibility index*, *spatial multi-criteria evaluation (SMCE)*, *location-based accessibility modelling* or *development-potential / suitability modelling*. Johannesburg's branding of it as "urban potential modelling" is local.
 
 | Step | What was done | Key parameters |
@@ -67,7 +69,118 @@ Note the repository layer does not carry the Industrial nodes shown on Figure 7 
 
 ---
 
-## 3. Limitations of the 2018 method
+## 3. SWOT analysis of the 2018 Urban Potential Model
+
+The SWOT reads Annexure 2 against its own stated purpose: an evidence base for nodal boundaries and density that reflects the SDF 2040, SPLUMA, and current realities, and that can be defended in land-use decisions and at tribunal.
+
+### Strengths
+
+| # | Strength | Evidence in the documents |
+|---|---|---|
+| S1 | First city-wide, quantified and published basis for node boundaries, replacing nodes inherited unchanged from the 2010/11 RSDFs | Policy s1.1; model and maps published at bit.ly/nodal-council |
+| S2 | Uniform 400 m hexagon unit avoids the size and shape bias of wards, suburbs and erven | Policy s2.2 |
+| S3 | Network-based walking distances rather than straight-line buffers, consistent with the SDF's walkable, transit-oriented intent | Annexure s2; Figure 4 station comparison |
+| S4 | Multi-dimensional: education, health, open space, public transport, jobs, capital investment, walkability | Annexure s3.2 |
+| S5 | Two separate indexes for two separate policy questions (where economic nodes go; how dense residential areas may become) | Annexure s3.2.2 and s3.2.4 |
+| S6 | LED overlay deliberately corrects for areas with high population but low formal activity | Annexure s3.2.3 |
+| S7 | Transect approach produces a gradient across the whole city instead of a binary in-node / out-of-node test | Policy s3.1 |
+| S8 | Reconciled with approved policy and two rounds of public participation; changes after comment are itemised | Annexure s4, s5; Policy Annexure 2 |
+| S9 | Translated to erf level and joined to LIS, so it is usable in day-to-day land-use decisions | Annexure s4.3 |
+| S10 | Built on free data and desktop GIS at low cost, so it is affordable to repeat | Annexure throughout |
+
+### Weaknesses
+
+| # | Weakness | Consequence |
+|---|---|---|
+| W1 | All inputs date from 2011 to 2017 (Census 2011, GTI 2012, taxis 2013, OSM 2016) | Index describes a city that no longer exists; Census 2022, BRT 1C, PRASA collapse and township densification are absent |
+| W2 | Economic activity measured only as counts of formal commercial buildings | Township and informal economies invisible; LED overlay needed as a patch |
+| W3 | Economic Nodes Index is 70 % existing commercial buildings | Measures current activity, not potential; entrenches the status quo |
+| W4 | Public transport has no frequency or operating status | Planned, dead and frequent stations score alike |
+| W5 | Walkability is a service-area ratio with footpaths excluded and no slope, barriers or sidewalks | Understates township walking; overstates gated suburbs |
+| W6 | Cells more than 200 m from a mapped road score zero on everything | "No data" is treated as "no access" |
+| W7 | One linear distance decay (500 m to 5 km) for all facility types | Same curve for a crèche and a university |
+| W8 | Max-divide normalisation | Sandton and the CBD compress the rest of the city towards zero; Jenks breaks set by a few cells |
+| W9 | Weights set by the modellers with no stakeholder process, sensitivity test or validation | Classes cannot be defended as other than a judgement |
+| W10 | Jenks plus manual "rationalisation" and narrative node-reconciliation rules | Not reproducible; no decision log |
+| W11 | No development capacity (zoning headroom, vacant land, bulk services) and no constraints (dolomite, flood, CBAs, heritage) inside the model | Potential is supply-side only; feasibility handled by policy text alone |
+| W12 | No demand or market signal (building plans, rezonings, transactions, values) | Index never tested against where development happened |
+| W13 | Facility counts carry no capacity (school places, clinic headcount, jobs) | Full and empty facilities score the same |
+| W14 | Linear conversion of index to 5 to 60 du/ha | Density bands have no built-form or services basis |
+| W15 | Erf assignment by "predominant overlap" from a 400 m grid | Split and large erven handled by text rule |
+| W16 | Parks and capex are CoJ-only while roads and schools are Gauteng-wide | Boundary cells scored inconsistently |
+| W17 | Police stations collected but unused; no libraries, halls, ECD centres, sports facilities | Social infrastructure picture incomplete |
+| W18 | ArcMap 10.x, QGIS 2.16 and Excel workflow | Cannot be re-run; institutional memory sits in files and individuals |
+| W19 | No uncertainty, completeness or data-vintage reporting | Users cannot see where the index is weak |
+| W20 | No indicator set or monitoring link despite the policy's JSIP and five-year review commitments | No way to tell whether nodes are performing |
+
+### Opportunities
+
+| # | Opportunity | How it helps |
+|---|---|---|
+| O1 | Census 2022 Small Area Layer | Current population, income, employment and dwelling type at fine scale |
+| O2 | SEAD-SA (SARS-based employment and firm data) via National Treasury | Jobs, not building counts, as the economic measure; confirmed accessible |
+| O3 | LIS, LUMS applications and approved building plans 2018 to 2025 | Zoning headroom and a seven-year record to validate the 2018 index; confirmed accessible |
+| O4 | Operator GTFS and ridership, or a City-built GTFS | Frequency-aware transit scoring and time-based job access; confirmed accessible or buildable |
+| O5 | Open tooling: r5, OpenTripPlanner, OSMnx, GeoPandas, QGIS 3; Google Open Buildings; LiDAR DEM; GCRO Quality of Life 7 | Travel-time accessibility, densification detection, slope, equity, at no licence cost |
+| O6 | SPLUMA five-year SDF review and the current SDF review process | Natural moment to re-base the nodal evidence and align cycles |
+| O7 | Established precedents: Cape Town TOD Comprehensive Model and ECAMP, London PTAL, Node-Place model, Portland State of the Centers | Tested designs to borrow rather than invent |
+| O8 | Inclusionary Housing policy, Land Use Scheme 2018, UDZ incentive, JSIP integration already promised in the policy | Index can be wired directly into instruments that change outcomes |
+| O9 | Building a City GTFS and data-sharing agreements with GDE, GDoH and Treasury | Durable data assets beyond this project |
+| O10 | Publishing code, parameters and a decision log | Credibility with the public and defensibility at tribunal |
+
+### Threats
+
+| # | Threat | Exposure |
+|---|---|---|
+| T1 | Data access failure: GTI licence not available, operators slow to share, SEAD-SA agreement delayed | Economic and transit pillars weakened or delayed |
+| T2 | Legal challenge under SPLUMA s22 and s42 where a boundary or density cannot be reproduced or explained | Policy set aside or discounted at tribunal |
+| T3 | Infrastructure decline (PRASA service, water, electricity) making modelled potential undeliverable; committed projects slipping | Nodes designated where growth cannot be serviced |
+| T4 | Boundary capture by individual developments, as with the post-comment Steyn City, Waterfall and Anchorville changes | Erodes the evidence base; invites further special pleading |
+| T5 | Stakeholder resistance from residents' associations and heritage bodies, as in 2018 | Delay, dilution of densification in well-located suburbs |
+| T6 | Staff turnover and loss of ArcMap and Excel working files | Model cannot be re-run or explained |
+| T7 | Over-complex redesign perceived as a black box | Loss of the transparency that was the 2018 model's main strength |
+| T8 | Informal and backyard densification outpacing policy in Soweto, Diepsloot, Ivory Park | Policy densities become irrelevant on the ground |
+| T9 | Climate hazards (flooding, heat) ignored in siting intensification | Liability and resilience failures |
+| T10 | SDF review and nodal review running on different timelines and evidence | Inconsistent policy hierarchy |
+
+---
+
+## 4. Gap analysis
+
+Each row compares what the policy, SPLUMA, the SDF 2040 or accepted practice requires with what the 2018 model delivers. Severity: **High** means the gap undermines a core policy intent or legal defensibility; **Medium** means it materially distorts results; **Low** means it is a quality or presentation issue.
+
+| # | Dimension | Required by policy, law or practice | What the 2018 model does | Gap | Severity | Closing action (sections 8 and 11) |
+|---|---|---|---|---|---|---|
+| G1 | Job access for low-income households | SPLUMA spatial justice; SDF "bring jobs to residential areas"; policy intent confirmed | Distance to formal buildings; LED overlay | No travel-time-to-jobs measure; no income or deprivation weighting | High | P1 opportunity-access pillar on SEAD-SA jobs and routed travel time |
+| G2 | Transit-oriented densification | SDF TOD nodes with minimum 60 du/ha within 500 m of stations | Nearest station by distance, planned and operating alike, no frequency | Frequency, operating status and ridership absent | High | PTAL-style score from GTFS; status field; ridership |
+| G3 | Economic node potential | Policy aims to "unlock potential"; ECAMP-type separation of performance from potential | 70 % weight on existing commercial counts | Index measures present activity, not potential | High | Node-place matrix; SEAD-SA employment; building-plan trend |
+| G4 | Infrastructure feasibility | SPLUMA s42(1)(c)(v) services impact; policy s3.1.2 infrastructure availability | Not in model; handled as policy text | No capacity or constraint layer | High | P4 capacity pillar with services capacity and constraint mask |
+| G5 | Data currency | SPLUMA five-year review; "respond to current realities" | 2011 to 2017 inputs | 9 to 15 years out of date | High | Census 2022, current networks, vintage manifest |
+| G6 | Informal economy and settlements | Inclusive city principle | Formal buildings only | Township economies and informal settlements unmeasured | High | Trading permits, informal settlement register, Open Buildings |
+| G7 | Reproducibility and defensibility | SPLUMA s22 consistency; tribunal scrutiny | Jenks plus manual rationalisation; mixed desktop tools | No code, no decision log | High | Coded pipeline; rule-based thresholds; published log |
+| G8 | Validation | Evidence-based planning claim in policy s1.1 | None | Index never tested against outcomes | High | Regression against LUMS and building plans 2018 to 2025 |
+| G9 | Weighting legitimacy | Multi-criteria practice; public participation principle | Modeller-set weights | No stakeholder process or sensitivity | Medium | AHP or Delphi; Monte Carlo robustness map |
+| G10 | Walkability quality | SDF walkable neighbourhoods; policy permeability guidance (80 to 120 intersections per km²) | Service-area ratio, paths excluded | Slope, barriers, sidewalks, footpaths, intersection density missing | Medium | Pedestrian network with slope and barriers; intersection density |
+| G11 | Facility capacity | SPLUMA s42 social infrastructure | Counts and nearest distance | No school places, clinic headcounts | Medium | EMIS and DoH capacity attributes |
+| G12 | Population accuracy | Fine-scale density for 2 km catchments and LED test | Census 2011 sub-place means | Coarse polygons, old data | Medium | Census 2022 SAL with dasymetric mapping |
+| G13 | Density conversion | SDF densities table; built-form feasibility | Linear 5 to 60 du/ha line | No typology or services basis | Medium | Zone and typology ranges with transit uplift |
+| G14 | Normalisation | Standard index practice | Max-divide; linear decay; zero for null | Outlier-driven; data gaps scored as no access | Medium | Percentile or log scaling; explicit no-data class |
+| G15 | Scale and erf assignment | Erf-level decisions in LIS | 400 m grid, predominant overlap | Split and large erven ambiguous | Medium | Erf access-point scoring; majority rule; published lookup |
+| G16 | Edge effects | Functional region extends beyond CoJ | Parks and capex CoJ-only | Boundary cells inconsistent | Low | Include neighbouring municipalities' facilities |
+| G17 | Scenario capability | Committed vs planned infrastructure decision | Single static run | Cannot show delivery risk | Medium | Status field; operating-only and committed maps |
+| G18 | Monitoring | Policy s3.1.2 JSIP link; five-year UDF sunset | No indicators | No way to measure node performance | Medium | State of the Nodes indicator set |
+| G19 | Data governance | Repeatable five-year cycle | No custodian, vintage or agreements recorded | Model depends on individuals | Medium | Vintage manifest; custodians; data-sharing agreements; City GTFS |
+| G20 | Uncertainty and completeness | Public transparency | None reported | Users cannot judge reliability | Low | Completeness and robustness maps |
+| G21 | Climate and environmental risk | SDF resilient city; Table 9 CBAs | Not in model | Flood, heat, biodiversity outside the index | Medium | Constraint mask and heat/greenness indicators |
+| G22 | Social facility coverage | Inclusive city | Schools, clinics, hospitals, parks only | Libraries, halls, ECD, sports, police unused | Low | Add facility classes; use SAPS layer already collected |
+
+### Gap priorities
+
+Eight gaps are rated High and share a common root: the 2018 model is a static accessibility snapshot built on old, formal-sector data, with no capacity, no validation and no reproducible classification. Closing G1, G3, G4 and G7 changes the architecture of the index; closing G2, G5, G6 and G8 is mostly data acquisition and testing. Section 8 lists the method responses and section 11 sets out the redesign that follows from this analysis.
+
+---
+
+## 5. Detailed limitations of the 2018 method (supporting notes to the SWOT)
 
 ### 3.1 Data
 1. **Everything is 9 to 15 years old now.** Census 2011 population, GTI 2012 land use, 2013 taxi data and 2016 OSM roads pre-date Census 2022, BRT Phase 1C, the PRASA collapse and partial restoration, the Gautrain ridership shift, Waterfall and Modderfontein build-out, and large-scale backyard densification in Soweto, Diepsloot and Ivory Park.
@@ -100,7 +213,7 @@ Note the repository layer does not carry the Industrial nodes shown on Figure 7 
 
 ---
 
-## 4. How other cities do this work
+## 6. How other cities do this work
 
 | City / body | Name of the method or product | What it does | Relevance to Johannesburg |
 |---|---|---|---|
@@ -123,7 +236,7 @@ Note the repository layer does not carry the Industrial nodes shown on Figure 7 
 
 ---
 
-## 5. Additional datasets to add in the next cycle
+## 7. Additional datasets to add in the next cycle
 
 ### A. Refresh the existing inputs
 | Dataset | Source | Why |
@@ -182,7 +295,7 @@ Note the repository layer does not carry the Industrial nodes shown on Figure 7 
 
 ---
 
-## 6. Proposed method improvements
+## 8. Proposed method improvements
 
 ### 6.1 Make it reproducible
 1. Rebuild the pipeline in code (Python with GeoPandas, OSMnx, r5py or OpenTripPlanner, pandana) or ArcGIS Pro / QGIS 3 model builder, with all parameters in a single configuration file and all inputs versioned with their vintage. Publish code and outputs alongside the policy, as the City already does for maps.
@@ -212,7 +325,7 @@ Note the repository layer does not carry the Industrial nodes shown on Figure 7 
 
 ---
 
-## 7. Suggested phasing
+## 9. Suggested phasing
 
 | Phase | Scope | Output |
 |---|---|---|
@@ -223,7 +336,7 @@ Note the repository layer does not carry the Industrial nodes shown on Figure 7 
 
 ---
 
-## 8. Open questions to settle before modelling
+## 10. Open questions settled before modelling
 
 1. Is the next cycle a **refresh** of the 2018 method, a **redesign**, or a phased combination?
 2. Which licensed or internal datasets are actually available to the team (GTI 2022/23, SEAD-SA, LIS, LUMS applications, building plans, JSIP, GTFS, EMIS)?
@@ -254,7 +367,7 @@ Note the repository layer does not carry the Industrial nodes shown on Figure 7 
 
 ---
 
-## 9. Agreed direction and redesign specification
+## 11. Agreed direction and redesign specification
 
 Decisions recorded on 4 October 2026 from the policy owner:
 
@@ -265,7 +378,7 @@ Decisions recorded on 4 October 2026 from the policy owner:
 | Planned infrastructure | Count operating **and committed** services. Committed means an approved MTREF construction budget or an awarded contract. Everything else is a scenario only |
 | Policy intent | All four: job access for low-income households, transit-oriented densification, growth of existing economic nodes, infrastructure-feasible growth |
 
-### 9.1 Index architecture: four pillars, one classification
+### 11.1 Index architecture: four pillars, one classification
 
 Each 400 m hexagon (and each erf access point) receives four pillar scores on 0 to 1. The pillars map one-to-one onto the four policy intents so that the weighting debate is explicit.
 
@@ -278,7 +391,7 @@ Each 400 m hexagon (and each erf access point) receives four pillar scores on 0 
 
 **Substitute for GTI.** Without GeoTerraImage, the economic layer rests on SEAD-SA (employment and firms from tax records), LIS zoning (what is permitted), approved building plans (what was built), and open POIs (what is there). Building footprints from Google Open Buildings or Microsoft give built area where plans are missing. This combination is arguably stronger than 2012 GTI counts for a jobs-focused index, but it should be stated in the Annexure as a deliberate choice.
 
-### 9.2 Classification
+### 11.2 Classification
 
 1. **Node-place matrix.** Node = mean of P1 and P2. Place = P3. Plot every hexagon:
    - High node, high place: *balanced* candidate for Metropolitan or Regional node.
@@ -289,31 +402,31 @@ Each 400 m hexagon (and each erf access point) receives four pillar scores on 0 
 3. **Rule-based thresholds** replace Jenks: for example Metropolitan requires node score in the top decile and employment above a stated floor; Regional requires frequent transit plus a smaller employment floor. Thresholds are published in the Annexure and tested in the sensitivity run.
 4. **Contiguity rules** replace manual rationalisation: majority filter over neighbouring cells, minimum mapping unit, and a logged list of every boundary set by hand with the reason.
 
-### 9.3 Committed infrastructure handling
+### 11.3 Committed infrastructure handling
 
 - Maintain one network dataset with a `status` field: operating, committed, planned.
 - Base model uses operating plus committed. Publish a second map using operating only so the public can see how much of a node's standing depends on delivery.
 - Review the committed list every budget cycle; a project that loses its budget drops back to planned and the affected cells are re-scored.
 
-### 9.4 Weighting and sensitivity
+### 11.4 Weighting and sensitivity
 
 - Hold one AHP or Delphi session with City Transformation and Spatial Planning, Transport, EISD, Housing, Economic Development and Joburg Water to set weights between the four pillars and within each pillar.
 - Run a Monte Carlo perturbation of weights (for example 5 000 draws, plus or minus 20 % per weight) and publish a robustness map showing how often each cell keeps its class.
 - Also publish an equal-weights map as a neutral reference.
 
-### 9.5 Validation plan
+### 11.5 Validation plan
 
 - Build a 2018-equivalent score from the new pipeline on 2018 inputs where they exist, then test whether it predicts where LUMS rezoning and consent applications and approved building-plan floor area occurred in 2018 to 2025 (logistic or negative-binomial regression at hexagon level).
 - Repeat for the new index on a hold-out: fit on 2018 to 2022 applications, test on 2023 to 2025.
 - Report the results in the policy review. If the 2018 Economic Nodes Index predicts applications no better than SEAD-SA employment alone, that is the evidence for dropping the 70 % commercial-count weighting.
 
-### 9.6 Tooling
+### 11.6 Tooling
 
 - Python stack: GeoPandas, Shapely, OSMnx for the pedestrian network, r5py for public transport travel times, pandana or networkx for walking accessibility, h3-py for an optional H3 layer, scikit-learn for sensitivity and validation.
 - QGIS 3 for cartography and public maps; ArcGIS Pro acceptable for the cadastral join if LIS workflows require it.
 - Repository layout: `data/raw` with a vintage manifest, `data/processed`, `src` for the pipeline, `config/weights.yaml`, `outputs` for hexagon and erf layers, `docs` for the Annexure and decision log.
 
-### 9.7 Outputs
+### 11.7 Outputs
 
 1. Hexagon layer with the four pillar scores, node-place class, capacity flag, robustness value, and data-completeness flag.
 2. Erf-level lookup (erf key, access-point node class, majority class, density band) for LIS and the public portal.
@@ -321,7 +434,7 @@ Each 400 m hexagon (and each erf access point) receives four pillar scores on 0 
 4. Two public maps: operating plus committed (policy basis) and operating only (delivery risk).
 5. State of the Nodes indicator table per node for the monitoring cycle.
 
-### 9.8 Immediate data requests
+### 11.8 Immediate data requests
 
 | Item | Owner to approach | Format wanted |
 |---|---|---|
@@ -338,7 +451,7 @@ Each 400 m hexagon (and each erf access point) receives four pillar scores on 0 
 | GCRO Quality of Life 7 ward-level indicators | GCRO (open) | CSV |
 | OSM extract, Open Buildings footprints, LiDAR DEM | Geofabrik, Google, CoJ Corporate GIS | PBF, CSV, raster |
 
-### 9.9 If no GTFS feed can be obtained
+### 11.9 If no GTFS feed can be obtained
 
 No Johannesburg operator publishes a GTFS feed openly. The specification therefore treats GTFS as something the project builds, not something it downloads.
 
