@@ -337,3 +337,15 @@ Each 400 m hexagon (and each erf access point) receives four pillar scores on 0 
 | Census 2022 SAL population, income, employment, dwelling type | Stats SA | CSV plus SAL boundaries |
 | GCRO Quality of Life 7 ward-level indicators | GCRO (open) | CSV |
 | OSM extract, Open Buildings footprints, LiDAR DEM | Geofabrik, Google, CoJ Corporate GIS | PBF, CSV, raster |
+
+### 9.9 If no GTFS feed can be obtained
+
+No Johannesburg operator publishes a GTFS feed openly. The specification therefore treats GTFS as something the project builds, not something it downloads.
+
+| Step | Action | Effort |
+|---|---|---|
+| Internal request | Ask Rea Vaya scheduling and the Gautrain Management Agency for "the GTFS zip supplied to Google Maps". Ask CoJ Transport for the 2017 WhereIsMyTransport taxi route dataset | Letters, 2 to 4 weeks lead time |
+| Minimal feed | Build stops, routes, trips and stop_times only, from published timetables: Rea Vaya, Gautrain (10 stations), Metrobus frequent routes first, PRASA operating lines only | 3 to 6 weeks of data entry; validate with the MobilityData GTFS validator |
+| Taxi headways | No timetables exist. Attach assumed peak and off-peak headways to each route from the 2013 routes layer or newer CoJ surveys, and flag them as estimates in the output | 1 week |
+| Fallback without GTFS | For a PTAL-style score, attach a headway attribute to each stop point and compute walk time plus half-headway directly. Only the jobs-within-45-minutes measure strictly needs a full feed for routing | None beyond attribute entry |
+| Ownership | Register the Johannesburg GTFS as a City asset with a named custodian and an annual refresh, so the next review does not start from zero | Governance decision |
