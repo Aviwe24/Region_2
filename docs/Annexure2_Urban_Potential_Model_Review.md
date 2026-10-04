@@ -347,26 +347,6 @@ Eight gaps are rated High and share a common root: the 2018 model is a static ac
 
 ---
 
-## Selected references and comparators
-
-- Transport for London, Public Transport Accessibility Levels: https://data.london.gov.uk/dataset/public-transport-accessibility-levels
-- C40, London PTAL scoring good-practice guide: https://www.c40.org/case-studies/c40-good-practice-guides-london-public-transport-accessibility-level-scoring/
-- City of Cape Town, Transit Oriented Development Strategic Framework (2016): https://resource.capetown.gov.za/documentcentre/Documents/City%20strategies,%20plans%20and%20frameworks/Trans-Oriented_Development_TOD_Strategic_Framework.pdf
-- City of Cape Town, Spatial Trends Report and MSDF 2023: https://www.capetown.gov.za/Work%20and%20business/Planning-portal/spatial-analysis-and-research/spatial-trends-report
-- Cape Town Urban Development Index (UP repository): https://repository.up.ac.za/handle/2263/82421
-- Access envelopes, Tshwane case studies (UP repository): https://repository.up.ac.za/handle/2263/45350
-- Portland Metro, State of the Centers: https://oregonmetro.gov/state-centers-report
-- Edmonton City Plan, Nodes and Corridors: https://www.edmonton.ca/sites/default/files/public-files/assets/PDF/CityPlan_NodesAndCorridors.pdf
-- Victoria, Activity Centres structure planning (PPN58): https://www.planning.vic.gov.au/__data/assets/word_doc/0031/654268/PPN58-Structure-planning-for-activity-centres.doc
-- Perth activity centre accessibility prioritisation: https://katalog.hcu-hamburg.de/vufind/Search2Record/DOAJ072507950
-- US EPA Smart Location Mapping and National Walkability Index: https://www.epa.gov/node/46219
-- GCRO Quality of Life Survey data: https://www.gcro.ac.za/outputs/dataportal/detail/
-- City of Johannesburg, Nodal Review (public document): https://cpms.joburg.org.za/asset_uplds/docs/Laws%20and%20Regulations/Nodal%20Review.pdf
-- City of Johannesburg, SDF 2040: https://joburg.org.za/documents_/Documents/Johannesburg-Spatial-Development-Framework-2040_APPROVED.pdf
-- Bertolini, L. (1999) Spatial development patterns and public transport: the application of an analytical model in the Netherlands. *Planning Practice and Research* 14(2).
-
----
-
 ## 11. Agreed direction and redesign specification
 
 Decisions recorded on 4 October 2026 from the policy owner:
@@ -462,3 +442,25 @@ No Johannesburg operator publishes a GTFS feed openly. The specification therefo
 | Taxi headways | No timetables exist. Attach assumed peak and off-peak headways to each route from the 2013 routes layer or newer CoJ surveys, and flag them as estimates in the output | 1 week |
 | Fallback without GTFS | For a PTAL-style score, attach a headway attribute to each stop point and compute walk time plus half-headway directly. Only the jobs-within-45-minutes measure strictly needs a full feed for routing | None beyond attribute entry |
 | Ownership | Register the Johannesburg GTFS as a City asset with a named custodian and an annual refresh, so the next review does not start from zero | Governance decision |
+
+---
+
+## Selected references and comparators
+
+- Transport for London, Public Transport Accessibility Levels: https://data.london.gov.uk/dataset/public-transport-accessibility-levels
+- C40, London PTAL scoring good-practice guide: https://www.c40.org/case-studies/c40-good-practice-guides-london-public-transport-accessibility-level-scoring/
+- City of Cape Town, Transit Oriented Development Strategic Framework (2016): https://resource.capetown.gov.za/documentcentre/Documents/City%20strategies,%20plans%20and%20frameworks/Trans-Oriented_Development_TOD_Strategic_Framework.pdf
+- City of Cape Town, Spatial Trends Report and MSDF 2023: https://www.capetown.gov.za/Work%20and%20business/Planning-portal/spatial-analysis-and-research/spatial-trends-report
+- Cape Town Urban Development Index (UP repository): https://repository.up.ac.za/handle/2263/82421
+- Access envelopes, Tshwane case studies (UP repository): https://repository.up.ac.za/handle/2263/45350
+- Portland Metro, State of the Centers: https://oregonmetro.gov/state-centers-report
+- Edmonton City Plan, Nodes and Corridors: https://www.edmonton.ca/sites/default/files/public-files/assets/PDF/CityPlan_NodesAndCorridors.pdf
+- Victoria, Activity Centres structure planning (PPN58): https://www.planning.vic.gov.au/__data/assets/word_doc/0031/654268/PPN58-Structure-planning-for-activity-centres.doc
+- Perth activity centre accessibility prioritisation: https://katalog.hcu-hamburg.de/vufind/Search2Record/DOAJ072507950
+- US EPA Smart Location Mapping and National Walkability Index: https://www.epa.gov/node/46219
+- GCRO Quality of Life Survey data: https://www.gcro.ac.za/outputs/dataportal/detail/
+- City of Johannesburg, Nodal Review (public document): https://cpms.joburg.org.za/asset_uplds/docs/Laws%20and%20Regulations/Nodal%20Review.pdf
+- City of Johannesburg, SDF 2040: https://joburg.org.za/documents_/Documents/Johannesburg-Spatial-Development-Framework-2040_APPROVED.pdf
+- Bertolini, L. (1999) Spatial development patterns and public transport: the application of an analytical model in the Netherlands. *Planning Practice and Research* 14(2).
+
+---
