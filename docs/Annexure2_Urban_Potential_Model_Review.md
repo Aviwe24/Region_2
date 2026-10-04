@@ -251,3 +251,89 @@ Note the repository layer does not carry the Industrial nodes shown on Figure 7 
 - City of Johannesburg, Nodal Review (public document): https://cpms.joburg.org.za/asset_uplds/docs/Laws%20and%20Regulations/Nodal%20Review.pdf
 - City of Johannesburg, SDF 2040: https://joburg.org.za/documents_/Documents/Johannesburg-Spatial-Development-Framework-2040_APPROVED.pdf
 - Bertolini, L. (1999) Spatial development patterns and public transport: the application of an analytical model in the Netherlands. *Planning Practice and Research* 14(2).
+
+---
+
+## 9. Agreed direction and redesign specification
+
+Decisions recorded on 4 October 2026 from the policy owner:
+
+| Question | Decision |
+|---|---|
+| Scope | Full redesign of the index, not a refresh of the 2018 logic |
+| Data confirmed available | SEAD-SA employment data; LIS cadastre, LUMS applications and approved building plans; GTFS and ridership from Rea Vaya, Metrobus and Gautrain; open-source data. GTI building-based land use is **not** confirmed |
+| Planned infrastructure | Count operating **and committed** services. Committed means an approved MTREF construction budget or an awarded contract. Everything else is a scenario only |
+| Policy intent | All four: job access for low-income households, transit-oriented densification, growth of existing economic nodes, infrastructure-feasible growth |
+
+### 9.1 Index architecture: four pillars, one classification
+
+Each 400 m hexagon (and each erf access point) receives four pillar scores on 0 to 1. The pillars map one-to-one onto the four policy intents so that the weighting debate is explicit.
+
+| Pillar | Policy intent served | Core measures | Primary data |
+|---|---|---|---|
+| **P1 Opportunity access** | Job access for low-income households | Jobs reachable within 45 and 60 minutes by walking plus public transport (door to door, including waiting from GTFS headways); same measure weighted by household deprivation; travel time to nearest clinic, primary school, high school by walking | SEAD-SA jobs, GTFS (Rea Vaya, Metrobus, Gautrain), PRASA operating lines, taxi route network, Census 2022 SAL income and unemployment, OSM pedestrian network, r5 routing |
+| **P2 Node value** | Transit-oriented densification | PTAL-style score from walk time to stops and service frequency; number of distinct frequent services; ridership at the nearest station or rank; pedestrian network walkability (service-area ratio, intersection density, slope-adjusted) | GTFS, operator ridership, rank counts, OSM plus JRA sidewalks, LiDAR slope |
+| **P3 Place value** | Growth of existing economic nodes | Employment density and firm count within 1 km; land-use mix entropy from zoning and points of interest; building-plan floor area approved 2018 to 2025; informal trading intensity; population density | SEAD-SA, LIS zoning, OSM and other open POIs, building plans, JPC trading permits, Census 2022 |
+| **P4 Capacity** | Infrastructure-feasible growth | Zoning headroom (permitted bulk minus built bulk); vacant and under-used land; bulk water, sewer and electricity capacity class; hard-constraint mask (dolomite class, flood line, wetland, CBA, undermined land) | LIS and Land Use Scheme 2018, building plans, Joburg Water WSDP, City Power, Council for Geoscience, JRA, GDARD C-Plan |
+
+**Substitute for GTI.** Without GeoTerraImage, the economic layer rests on SEAD-SA (employment and firms from tax records), LIS zoning (what is permitted), approved building plans (what was built), and open POIs (what is there). Building footprints from Google Open Buildings or Microsoft give built area where plans are missing. This combination is arguably stronger than 2012 GTI counts for a jobs-focused index, but it should be stated in the Annexure as a deliberate choice.
+
+### 9.2 Classification
+
+1. **Node-place matrix.** Node = mean of P1 and P2. Place = P3. Plot every hexagon:
+   - High node, high place: *balanced* candidate for Metropolitan or Regional node.
+   - High node, low place: *transit-rich, under-developed* candidate for General Urban densification or LED.
+   - Low node, high place: *activity-rich, transit-poor* flag for transport investment before further intensification.
+   - Low on both: Suburban or Peri-urban.
+2. **Capacity gate.** P4 scales the permitted intensity within a class rather than the class itself, so a well-located cell with no sewer capacity is still shown as a node but carries a capacity flag and a lower interim density band. Hard constraints mask the cell regardless of score.
+3. **Rule-based thresholds** replace Jenks: for example Metropolitan requires node score in the top decile and employment above a stated floor; Regional requires frequent transit plus a smaller employment floor. Thresholds are published in the Annexure and tested in the sensitivity run.
+4. **Contiguity rules** replace manual rationalisation: majority filter over neighbouring cells, minimum mapping unit, and a logged list of every boundary set by hand with the reason.
+
+### 9.3 Committed infrastructure handling
+
+- Maintain one network dataset with a `status` field: operating, committed, planned.
+- Base model uses operating plus committed. Publish a second map using operating only so the public can see how much of a node's standing depends on delivery.
+- Review the committed list every budget cycle; a project that loses its budget drops back to planned and the affected cells are re-scored.
+
+### 9.4 Weighting and sensitivity
+
+- Hold one AHP or Delphi session with City Transformation and Spatial Planning, Transport, EISD, Housing, Economic Development and Joburg Water to set weights between the four pillars and within each pillar.
+- Run a Monte Carlo perturbation of weights (for example 5 000 draws, plus or minus 20 % per weight) and publish a robustness map showing how often each cell keeps its class.
+- Also publish an equal-weights map as a neutral reference.
+
+### 9.5 Validation plan
+
+- Build a 2018-equivalent score from the new pipeline on 2018 inputs where they exist, then test whether it predicts where LUMS rezoning and consent applications and approved building-plan floor area occurred in 2018 to 2025 (logistic or negative-binomial regression at hexagon level).
+- Repeat for the new index on a hold-out: fit on 2018 to 2022 applications, test on 2023 to 2025.
+- Report the results in the policy review. If the 2018 Economic Nodes Index predicts applications no better than SEAD-SA employment alone, that is the evidence for dropping the 70 % commercial-count weighting.
+
+### 9.6 Tooling
+
+- Python stack: GeoPandas, Shapely, OSMnx for the pedestrian network, r5py for public transport travel times, pandana or networkx for walking accessibility, h3-py for an optional H3 layer, scikit-learn for sensitivity and validation.
+- QGIS 3 for cartography and public maps; ArcGIS Pro acceptable for the cadastral join if LIS workflows require it.
+- Repository layout: `data/raw` with a vintage manifest, `data/processed`, `src` for the pipeline, `config/weights.yaml`, `outputs` for hexagon and erf layers, `docs` for the Annexure and decision log.
+
+### 9.7 Outputs
+
+1. Hexagon layer with the four pillar scores, node-place class, capacity flag, robustness value, and data-completeness flag.
+2. Erf-level lookup (erf key, access-point node class, majority class, density band) for LIS and the public portal.
+3. Node and zone boundary layer with a decision log for every hand-set boundary.
+4. Two public maps: operating plus committed (policy basis) and operating only (delivery risk).
+5. State of the Nodes indicator table per node for the monitoring cycle.
+
+### 9.8 Immediate data requests
+
+| Item | Owner to approach | Format wanted |
+|---|---|---|
+| SEAD-SA hexagon or mesozone employment and firm counts, latest two years | National Treasury Cities Support Programme | CSV with geography keys |
+| GTFS feeds and 12 months of ridership by stop or station | Rea Vaya (CoJ Transport), Metrobus, Gautrain Management Agency | GTFS zip; CSV ridership |
+| PRASA lines and stations with operating status | PRASA | Shapefile plus status table |
+| Taxi routes and ranks, latest survey, with rank passenger counts | CoJ Transport, GPDRT | Shapefile, CSV |
+| LIS cadastre with Land Use Scheme 2018 zoning, FAR, coverage, height | CoJ Development Planning | Geodatabase |
+| LUMS applications 2018 to 2025 with type, decision and date | CoJ LUMS | CSV with erf key |
+| Approved building plans 2018 to 2025 with use and m² | CoJ Building Development Management | CSV with erf key |
+| Bulk services capacity by zone or substation | Joburg Water, City Power | Shapefile or zone table |
+| JSIP MTREF project list with status flag (committed vs planned) | CoJ Group Strategy | Shapefile, CSV |
+| Census 2022 SAL population, income, employment, dwelling type | Stats SA | CSV plus SAL boundaries |
+| GCRO Quality of Life 7 ward-level indicators | GCRO (open) | CSV |
+| OSM extract, Open Buildings footprints, LiDAR DEM | Geofabrik, Google, CoJ Corporate GIS | PBF, CSV, raster |
