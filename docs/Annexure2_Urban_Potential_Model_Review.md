@@ -311,18 +311,18 @@ Eight gaps are rated High and share a common root: the 2018 model is a static ac
 
 ## 8. Proposed method improvements
 
-### 6.1 Make it reproducible
+### 8.1 Make it reproducible
 1. Rebuild the pipeline in code (Python with GeoPandas, OSMnx, r5py or OpenTripPlanner, pandana) or ArcGIS Pro / QGIS 3 model builder, with all parameters in a single configuration file and all inputs versioned with their vintage. Publish code and outputs alongside the policy, as the City already does for maps.
 2. Keep the 400 m hexagon for continuity, but compute measures at erf access points as well so the property lookup is direct rather than a "predominant overlap" join. Consider H3 resolution 9 for interoperability with SEAD-SA and other national datasets.
 3. Replace manual rationalisation with documented rules: majority filter, minimum mapping unit, contiguity to a transit stop or activity street, and a published decision log for every node whose boundary differs from the model.
 
-### 6.2 Better measures
+### 8.2 Better measures
 4. **Walkability:** build a pedestrian network including paths and sidewalks, apply slope impedance, treat freeways, rail lines, rivers and gated estates as barriers, and report intersection density and block length alongside the service-area ratio. Map OSM completeness and flag low-confidence cells instead of scoring them 0.
 5. **Accessibility:** use travel time rather than distance, with facility-specific thresholds (for example primary school 15 minutes, clinic 30 minutes, tertiary 45 minutes by public transport) and cumulative-opportunity or gravity formulations. Count capacity (enrolment places, clinic headcount, jobs) rather than facilities.
 6. **Public transport:** adopt a PTAL-style score from GTFS (walk time to stop plus frequency plus reliability) and a jobs-within-45-minutes-by-PT measure computed with r5. Score operating services only, and run planned infrastructure as a separate scenario.
 7. **Normalisation:** use rank or percentile scaling, or log transform with winsorising, so a single outlier node does not compress the rest of the city. Distinguish "no data" from "no access".
 
-### 6.3 Better index design
+### 8.3 Better index design
 8. **Separate node value from place value** (Node-Place model). Node = transit level and walkability; place = population and employment density, land-use mix, amenities. Classify each cell or station precinct as balanced, transit-rich but under-developed (densify), activity-rich but transit-poor (invest in transport), or low on both. This replaces the 70 % commercial weighting that makes the current index describe today rather than potential.
 9. **Add a capacity-and-constraints layer**: zoning headroom, vacant and under-used land, bulk services capacity, minus hard constraints (dolomite, flood, wetlands, CBAs). Potential = accessibility x capacity, masked by constraints.
 10. **Add a demand layer and validate**: test whether the 2018 index predicted 2018 to 2025 building plans and rezonings (for example logistic regression of application presence on index score and sub-indexes). Report the result in the review; it is the single strongest piece of evidence for or against the weights.
@@ -330,7 +330,7 @@ Eight gaps are rated High and share a common root: the 2018 model is a static ac
 12. **Replace the LED patch with an explicit transformation index**: population density, deprivation (Census 2022 and GCRO), jobs-housing imbalance, and travel time to jobs, used both to classify LED zones and to prioritise JSIP spending.
 13. **Density conversion:** replace the straight line with zone-and-typology ranges tested against built-form feasibility (for example 40 to 60 du/ha as three-storey walk-ups) and bulk-services capacity, with transit-based uplifts similar to Ontario MTSA targets expressed as residents plus jobs per hectare.
 
-### 6.4 Policy and monitoring
+### 8.4 Policy and monitoring
 14. Publish an annual or biennial **State of the Nodes** report (Portland model, Cape Town Spatial Trends model) with per-node indicators: du/ha achieved, building-plan m², rezonings, vacancy, PT ridership, land-use mix, inclusionary units. Tie it to the five-year UDF and precinct-plan sunset clause already in the policy.
 15. Align the model refresh to the SPLUMA five-year SDF cycle and lock a data-vintage table into the Annexure so every input has a date and owner.
 16. Formalise data-sharing agreements for the heavy inputs (GDE EMIS, GDoH, SEAD-SA via National Treasury, GTI licence, operator GTFS and ridership).
