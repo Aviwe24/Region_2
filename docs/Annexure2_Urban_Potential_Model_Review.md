@@ -9,6 +9,20 @@
 
 ---
 
+## Executive summary
+
+This report reviews Annexure 2 of the Nodal Review Policy 2019/20, the Urban Potential Modelling and Zone Delineation Method of November 2018, ahead of the next policy review cycle. It describes the model and its data, assesses it through a SWOT and a gap analysis, compares it with practice in other cities, and sets out the data and method changes recommended for the redesign that the Department has decided to undertake.
+
+**Findings.** The 2018 model was a sound first step: a transparent, city-wide, network-based accessibility index on a uniform 400 m grid, reconciled with approved policy and two rounds of public participation. Its weaknesses now outweigh its strengths. Every input dates from 2011 to 2017. Economic activity is measured only by counting formal commercial buildings, which leaves township economies invisible and makes the Economic Nodes Index describe the current commercial geography rather than potential. Public transport is scored by distance alone, with no service frequency or operating status. Development capacity, bulk services and environmental constraints are absent from the model, weights were never tested, node classes were set by Jenks breaks and manual adjustment, and the model was never validated against where development actually occurred. The workflow in ArcMap, QGIS 2.16 and Excel cannot be re-run.
+
+**Gaps.** Twenty-two gaps are identified against the policy's own intent, SPLUMA and accepted practice. Eight are rated High: job access for low-income households, transit-oriented densification, economic potential versus performance, infrastructure feasibility, data currency, the informal economy, reproducibility, and validation. They share one root cause, a static accessibility snapshot built on old, formal-sector data with no capacity layer, no validation and no reproducible classification.
+
+**Comparators.** Cape Town's Transit Oriented Development Comprehensive Model, Transit Accessible Precincts and Economic Areas Management Programme are the closest South African precedents. London's Public Transport Accessibility Level, the Node-Place model, Portland's State of the Centers report and the United States EPA Smart Location Database are the international equivalents. All separate transport supply from land-use performance, use service frequency, and monitor centres on a cycle.
+
+**Recommendations.** Rebuild the index as four pillars matching the Department's four policy intents: opportunity access, node value, place value and capacity. Use Census 2022, SEAD-SA employment data, LIS zoning headroom, LUMS applications and building plans, and a City-built GTFS feed. Score operating and committed infrastructure, with an operating-only map published alongside. Classify nodes with a node-place matrix and published thresholds, set weights through a structured stakeholder process with sensitivity testing, validate against 2018 to 2025 development, code the pipeline so it can be re-run, and institute a State of the Nodes monitoring report. Immediate actions are the data requests listed in section 11.8 and the construction of a minimal GTFS feed described in section 11.9.
+
+---
+
 ## 1. What the 2018 model does (one-page summary)
 
 > Document order: sections 1 and 2 describe the model and its data; sections 3 and 4 are the review proper (SWOT and gap analysis); sections 5 to 9 give supporting detail, comparators and options; sections 10 and 11 record decisions and the resulting redesign.
