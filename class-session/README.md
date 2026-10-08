@@ -15,6 +15,9 @@ typologies, set in Johannesburg.
 - An interactive Nodal Review map built from this repository's data
 - A formative rubric, an exit ticket, facilitator notes and sources
 
+The mini-lecture has its own slide deck, with speaker notes:
+https://claude.ai/artifact/8LH9zJiLjr9h1Ek4a1yVzu (private until shared).
+
 The page is published as an artifact, which adds the document skeleton
 (`<!doctype>`, `<head>`, `<body>`) at publish time, so the file starts with
 `<title>`.
