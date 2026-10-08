@@ -19,6 +19,9 @@ PAGE = HERE / "index.html"
 ZONE_TOL, ZONE_MIN_AREA = 1.2, 6      # map units (1 unit is about 50 m)
 REGION_TOL, REGION_MIN_AREA = 1.5, 10
 
+# The studio site, marked on the map (lon, lat): Vrededorp, north-west of the CBD.
+SITE = ("Vrededorp", 28.0169, -26.1939)
+
 
 def rings(geom):
     if geom["type"] == "Polygon":
@@ -115,7 +118,10 @@ def main():
                      "d": to_path(f["geometry"], REGION_TOL, REGION_MIN_AREA),
                      "cx": round(cx / (6 * a), 1), "cy": round(cy / (6 * a), 1)})
 
-    data = json.dumps({"w": width, "h": round(height, 1), "zones": zones, "regions": regs},
+    sx, sy = project(SITE[1:])
+    site = {"name": SITE[0], "x": round(sx, 1), "y": round(sy, 1)}
+    data = json.dumps({"w": width, "h": round(height, 1), "m_per_unit": round(1 / scale, 2),
+                       "site": site, "zones": zones, "regions": regs},
                       separators=(",", ":"))
     page = PAGE.read_text()
     page, n = re.subn(r'(<script id="map-data" type="application/json">).*?(</script>)',

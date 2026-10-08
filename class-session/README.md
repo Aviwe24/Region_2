@@ -1,7 +1,8 @@
 # Building in the Middle
 
 A three-hour, first-year urban design studio session on missing middle housing
-typologies, set in Johannesburg.
+typologies. It starts each group's typologies panel for Vrededorp (Fietas),
+north-west of the Johannesburg CBD.
 
 `index.html` is the full session pack:
 
@@ -9,10 +10,12 @@ typologies, set in Johannesburg.
 - An opener ("What the street shows") with hidden plans to reveal in class
 - Mini-lecture notes: five key ideas, with a street-elevation spectrum
 - Eight printable type cards, all drawn at the same scale, with density metrics
-- A student-facing studio brief and four test stands
+- A Vrededorp site section: history, stands, 14th Street and Nodal Review position
+- The Vrededorp typologies panel brief (A1), with a layout and four Vrededorp stands
 - A plot lab that calculates coverage, FAR, net density and open space, and
   checks a scheme against Nodal Review guidance
-- An interactive Nodal Review map built from this repository's data
+- An interactive Nodal Review map built from this repository's data, with a
+  Vrededorp marker and close-up
 - A formative rubric, an exit ticket, facilitator notes and sources
 
 The mini-lecture has its own slide deck, with speaker notes:
@@ -36,4 +39,5 @@ python3 class-session/build_map.py
 Nodal Review density and height figures come from City and press summaries of
 the policy (approved by Council in February 2020). Check them against the
 approved document before teaching. Stand sizes and type figures are
-illustrative teaching numbers.
+illustrative teaching numbers. Vrededorp stand sizes follow typical listed
+stand areas; students should measure their real stands.
