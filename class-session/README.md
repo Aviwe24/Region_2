@@ -18,6 +18,10 @@ north-west of the Johannesburg CBD.
   Vrededorp marker and close-up
 - A formative rubric, an exit ticket, facilitator notes and sources
 
+`smartcode.html` is a reference example for the panels: a SmartCode-style
+transect code calibrated for Vrededorp (illustrative, not an adopted code):
+https://claude.ai/artifact/SHDSWXCKBZTx9uKHcePM23
+
 The mini-lecture has its own slide deck, with speaker notes:
 https://claude.ai/artifact/8LH9zJiLjr9h1Ek4a1yVzu (private until shared).
 
