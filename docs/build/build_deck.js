@@ -347,7 +347,7 @@ async function icon(Comp, color, px = 256) {
   tb(s, [{ text: "Endorse the four decisions", options: { bullet: true, breakLine: true } }, { text: "Authorise the data requests to operators, Treasury and internal departments", options: { bullet: true, breakLine: true } }, { text: "Nominate a model custodian in the Department", options: { bullet: true } }], { x: M, y: 5.95, w: 11, h: 0.95, fontSize: 14, color: "CADCE8", paraSpaceAfter: 3 });
   notes(s, "Close on the asks. Full written review is in the Word report circulated with this deck.");
 
-  const out = "/home/user/Region_2/docs/Annexure2_Review_Briefing.pptx";
+  const out = path.join(__dirname, "..", "Annexure2_Review_Briefing.pptx");
   await pres.writeFile({ fileName: out });
   await applyTheme(out, THEME);
   console.log("wrote", out);
