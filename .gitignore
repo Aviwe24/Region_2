@@ -1,0 +1,9 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Node build dependencies (docs/build)
+node_modules/
+
+# Office lock files
+~$*

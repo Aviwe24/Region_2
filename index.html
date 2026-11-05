@@ -1,0 +1,581 @@
+<title>Joburg Nodal Review Map</title>
+<meta name="description" content="Interactive map of the City of Johannesburg nodal review zones and regions A to G.">
+<style>
+  :root {
+    /* City of Johannesburg design system tokens */
+    --golden-yellow: #ffb600;
+    --evening-green: #005470;
+    --black: #000000;
+    --charcoal: #686058;
+    --ink: #0d0d0d;
+    --stone: #e8e7e6;
+    --white: #ffffff;
+    --near-white: #fcfcfc;
+    --grey: #53575a;
+    --rule: var(--charcoal);
+    --pale-yellow: #ffdc93;
+    --warm-grey: #bbb8b4;
+    --seq-1: #9cbcc7;
+    --seq-2: #75a3b2;
+    --seq-3: #4f899c;
+    --seq-4: #296f87;
+    --seq-5: var(--evening-green);
+    --sans: Arial, "Liberation Sans", Arimo, "Helvetica Neue", Helvetica, sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; border-radius: 0; }
+  body {
+    margin: 0;
+    background: var(--stone);
+    color: var(--ink);
+    font: 14px/20px var(--sans);
+  }
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-inline: 24px;
+    padding-block: 24px 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  header {
+    display: grid;
+    gap: 8px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  h1 {
+    margin: 0;
+    font-size: 32px;
+    line-height: 38px;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+  header p {
+    margin: 0;
+    max-width: 68ch;
+    color: var(--grey);
+    font-size: 15px;
+    line-height: 22px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .page { padding-inline: 16px; }
+    h1 { font-size: 26px; line-height: 32px; }
+  }
+
+  /* Map */
+  .map-wrap {
+    position: relative;
+    background: var(--white);
+    border: 1px solid var(--rule);
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .seg { display: flex; border: 1px solid var(--evening-green); }
+  .seg button {
+    font: 700 13px/18px var(--sans);
+    padding: 7px 14px;
+    border: 0;
+    background: var(--white);
+    color: var(--evening-green);
+    cursor: pointer;
+  }
+  .seg button + button { border-left: 1px solid var(--evening-green); }
+  .seg button[aria-pressed="true"] { background: var(--evening-green); color: var(--white); }
+  .check { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+  .check input { accent-color: var(--evening-green); width: 16px; height: 16px; margin: 0; }
+  button:focus-visible, input:focus-visible, .row:focus-visible {
+    outline: 2px solid var(--golden-yellow);
+    outline-offset: 2px;
+  }
+  svg#map { display: block; width: 100%; height: auto; max-height: min(80vh, 920px); touch-action: none; cursor: grab; }
+  svg#map:active { cursor: grabbing; }
+  .feature { vector-effect: non-scaling-stroke; stroke: var(--white); stroke-width: 0.6; transition: opacity 150ms; cursor: pointer; }
+  .feature.dim { opacity: 0.25; }
+  .feature.hot { stroke: var(--ink); stroke-width: 2; }
+  .region-line { fill: none; stroke: var(--ink); stroke-width: 1.4; vector-effect: non-scaling-stroke; pointer-events: none; }
+  .region-label {
+    font: 700 15px var(--sans);
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .zoom {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: grid;
+    border: 1px solid var(--rule);
+    background: var(--white);
+  }
+  .zoom button {
+    width: 34px; height: 34px;
+    border: 0;
+    background: var(--white);
+    color: var(--ink);
+    font: 700 18px/1 var(--sans);
+    cursor: pointer;
+  }
+  .zoom button + button { border-top: 1px solid var(--rule); }
+  .zoom button:hover { background: var(--pale-yellow); }
+  .tip {
+    position: absolute;
+    pointer-events: none;
+    background: var(--ink);
+    color: var(--white);
+    padding: 6px 10px;
+    font-size: 13px;
+    line-height: 18px;
+    white-space: nowrap;
+    transform: translate(-50%, calc(-100% - 12px));
+  }
+  .tip b { display: block; }
+  .status { padding: 48px 16px; text-align: center; color: var(--grey); }
+  .status.error { color: var(--ink); background: var(--pale-yellow); }
+
+  /* Side panel */
+  aside { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .panel { background: var(--near-white); border: 1px solid var(--rule); }
+  .panel h2 {
+    margin: 0;
+    padding: 10px 16px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 700;
+    background: var(--evening-green);
+    color: var(--white);
+  }
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .row {
+    display: grid;
+    grid-template-columns: 14px minmax(0, 1fr) auto;
+    grid-template-rows: auto 4px;
+    column-gap: 10px;
+    row-gap: 4px;
+    align-items: center;
+    padding: 8px 16px;
+    border-top: 1px solid var(--stone);
+    cursor: pointer;
+  }
+  .row:first-child { border-top: 0; }
+  .row:hover { background: var(--white); }
+  .row[aria-selected="true"] { background: var(--pale-yellow); }
+  .sw { width: 14px; height: 14px; }
+  .row .name { font-weight: 700; font-size: 13px; overflow-wrap: anywhere; }
+  .row .val { font-variant-numeric: tabular-nums; font-size: 13px; text-align: right; }
+  .row .bar { grid-column: 2 / 4; height: 4px; background: var(--stone); position: relative; }
+  .row .bar i { position: absolute; inset: 0 auto 0 0; background: var(--charcoal); }
+  .total {
+    display: flex; justify-content: space-between;
+    padding: 8px 16px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .detail { padding: 12px 16px 16px; display: grid; gap: 10px; }
+  .detail h3 { margin: 0; font-size: 18px; line-height: 24px; }
+  .detail .hint { color: var(--grey); margin: 0; }
+  dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; }
+  dt { color: var(--grey); font-size: 13px; }
+  dd { margin: 0; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .scale { display: grid; grid-template-columns: repeat(5, 1fr); padding: 12px 16px 4px; gap: 0; }
+  .scale span { height: 12px; }
+  .scale-labels {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    padding: 0 16px 12px;
+    font-size: 11px; line-height: 14px;
+    color: var(--grey);
+    font-variant-numeric: tabular-nums;
+  }
+  .caption {
+    margin: 0;
+    font-size: 12px;
+    line-height: 16px;
+    font-style: italic;
+    color: var(--charcoal);
+    max-width: 90ch;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .feature { transition: none; }
+  }
+</style>
+
+<div class="page">
+  <header>
+    <h1>Johannesburg Nodal Review</h1>
+    <p>Eight planning zones and the seven administrative regions of the City of Johannesburg. Switch layers, hover for figures, and select a zone or region to see its details. Drag to pan and scroll or pinch to zoom.</p>
+  </header>
+
+  <div class="layout">
+    <div>
+      <div class="map-wrap" id="mapWrap">
+        <div class="toolbar">
+          <div class="seg" role="group" aria-label="Map layer">
+            <button type="button" id="btnZones" aria-pressed="true">Nodal zones</button>
+            <button type="button" id="btnRegions" aria-pressed="false">Regions by share of GDP</button>
+          </div>
+          <label class="check" id="outlineToggle"><input type="checkbox" id="chkOutlines" checked> Region boundaries</label>
+        </div>
+        <div class="status" id="status">Loading map data</div>
+        <svg id="map" role="img" aria-label="Map of the City of Johannesburg" hidden></svg>
+        <div class="zoom" id="zoomCtl" hidden>
+          <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
+          <button type="button" id="zoomOut" aria-label="Zoom out">&minus;</button>
+          <button type="button" id="zoomReset" aria-label="Reset view" style="font-size:12px">&#8634;</button>
+        </div>
+        <div class="tip" id="tip" hidden></div>
+      </div>
+    </div>
+
+    <aside>
+      <section class="panel">
+        <h2 id="listTitle">Nodal zones</h2>
+        <div id="scaleBox" hidden>
+          <div class="scale" id="scale"></div>
+          <div class="scale-labels" id="scaleLabels"></div>
+        </div>
+        <ul class="rows" id="rows" role="listbox" aria-labelledby="listTitle"></ul>
+        <div class="total" id="total"></div>
+      </section>
+      <section class="panel" aria-live="polite">
+        <h2>Selected</h2>
+        <div class="detail" id="detail"></div>
+      </section>
+    </aside>
+  </div>
+
+  <p class="caption" id="caption">Figure 1: City of Johannesburg nodal review zones. Source: CoJ Nodal Review and regional boundary layers (output.json). Areas are as recorded in the source data.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+(function () {
+  // Zone palette: CAP hues for map categories, nodes warm, zones cool, beyond the boundary muted.
+  const ZONE_COLORS = {
+    1: "#aa6389", // Inner City Node: berry
+    2: "#c47c5a", // Metropolitan Node: clay
+    3: "#f09f54", // Regional Node: apricot
+    4: "#a191b2", // General Urban Zone: mauve
+    5: "#a1a468", // LED Zone: olive
+    6: "#a3bbc3", // Sub-Urban Zone: blue-grey
+    7: "#9bae88", // Peri-Urban Zone: sage
+    8: "#bbb8b4"  // Beyond Urban Development Boundary: warm-grey
+  };
+  const SEQ = ["#9cbcc7", "#75a3b2", "#4f899c", "#296f87", "#005470"];
+  const SEQ_BREAKS = [10, 12, 15, 25];
+  const SEQ_LABELS = ["< 10%", "10-12%", "12-15%", "15-25%", "25%+"];
+  const gdpClass = v => d3.bisectRight(SEQ_BREAKS, v);
+
+  // SA number style: comma decimal, space for thousands.
+  const fmt = (n, dp = 1) => {
+    const [i, f] = Math.abs(n).toFixed(dp).split(".");
+    const s = i.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return (n < 0 ? "-" : "") + s + (f ? "," + f : "");
+  };
+
+  // Minimal TopoJSON decoder (Polygon / MultiPolygon only).
+  function topoFeatures(topo, name) {
+    const [sx, sy] = topo.transform.scale, [tx, ty] = topo.transform.translate;
+    const arcs = topo.arcs.map(arc => {
+      let x = 0, y = 0;
+      return arc.map(([dx, dy]) => { x += dx; y += dy; return [x * sx + tx, y * sy + ty]; });
+    });
+    const ring = idx => {
+      const pts = [];
+      idx.forEach(i => {
+        const a = i < 0 ? arcs[~i].slice().reverse() : arcs[i];
+        a.forEach((p, k) => { if (k > 0 || pts.length === 0) pts.push(p); });
+      });
+      return pts;
+    };
+    return topo.objects[name].geometries.map((g, n) => ({
+      type: "Feature",
+      id: n,
+      properties: g.properties,
+      geometry: {
+        type: g.type,
+        coordinates: g.type === "Polygon" ? g.arcs.map(ring) : g.arcs.map(p => p.map(ring))
+      }
+    }));
+  }
+
+  // Planar projection with a cos(latitude) stretch. The source rings follow RFC 7946
+  // winding, which d3's spherical projections would read as inverted.
+  const K = Math.cos(-26.15 * Math.PI / 180);
+  function flatten(features) {
+    const fix = c => typeof c[0] === "number" ? [c[0] * K, c[1]] : c.map(fix);
+    features.forEach(f => { f.geometry.coordinates = fix(f.geometry.coordinates); });
+    return features;
+  }
+
+  const els = {
+    status: document.getElementById("status"),
+    svg: document.getElementById("map"),
+    tip: document.getElementById("tip"),
+    wrap: document.getElementById("mapWrap"),
+    rows: document.getElementById("rows"),
+    total: document.getElementById("total"),
+    detail: document.getElementById("detail"),
+    listTitle: document.getElementById("listTitle"),
+    scaleBox: document.getElementById("scaleBox"),
+    caption: document.getElementById("caption"),
+    chk: document.getElementById("chkOutlines"),
+    outlineToggle: document.getElementById("outlineToggle"),
+    btnZones: document.getElementById("btnZones"),
+    btnRegions: document.getElementById("btnRegions")
+  };
+
+  let state = { layer: "zones", selected: null, outlines: true };
+  try {
+    const saved = JSON.parse(localStorage.getItem("joburg-map") || "{}");
+    if (saved.layer === "zones" || saved.layer === "regions") state.layer = saved.layer;
+    if (typeof saved.outlines === "boolean") state.outlines = saved.outlines;
+  } catch (e) {}
+  const persist = () => {
+    try { localStorage.setItem("joburg-map", JSON.stringify({ layer: state.layer, outlines: state.outlines })); } catch (e) {}
+  };
+
+  fetch("output.json")
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(init)
+    .catch(() => {
+      els.status.textContent = "The map data (output.json) could not be loaded. Open this page through a web server in the same folder as output.json, for example with: python3 -m http.server";
+      els.status.classList.add("error");
+    });
+
+  function init(topo) {
+    const regions = flatten(topoFeatures(topo, "Regions"))
+      .sort((a, b) => a.properties.REGION_ID.localeCompare(b.properties.REGION_ID));
+    const zones = flatten(topoFeatures(topo, "NodalReview"))
+      .sort((a, b) => a.properties.N_Rev_new - b.properties.N_Rev_new);
+    const zoneTotal = d3.sum(zones, d => d.properties.Area_km2);
+    const regionTotal = d3.sum(regions, d => d.properties.Area);
+
+    const W = 900;
+    const bounds = { type: "FeatureCollection", features: regions.concat(zones) };
+    const proj0 = d3.geoIdentity().reflectY(true).fitWidth(W - 40, bounds);
+    const [[, y0], [, y1]] = d3.geoPath(proj0).bounds(bounds);
+    const H = Math.ceil(y1 - y0) + 40;
+    const proj = d3.geoIdentity().reflectY(true).fitExtent([[20, 20], [W - 20, H - 20]], bounds);
+    const path = d3.geoPath(proj);
+
+    const svg = d3.select(els.svg).attr("viewBox", `0 0 ${W} ${H}`);
+    els.status.hidden = true;
+    els.svg.hidden = false;
+    document.getElementById("zoomCtl").hidden = false;
+
+    const root = svg.append("g");
+    const gZones = root.append("g");
+    const gRegions = root.append("g");
+    const gLines = root.append("g");
+    const gLabels = root.append("g");
+
+    // Larger, outer zones first so nodes sit on top.
+    const zonePaths = gZones.selectAll("path")
+      .data(zones.slice().reverse())
+      .join("path")
+      .attr("class", "feature")
+      .attr("d", path)
+      .attr("fill", d => ZONE_COLORS[d.properties.N_Rev_new]);
+
+    const regionPaths = gRegions.selectAll("path")
+      .data(regions)
+      .join("path")
+      .attr("class", "feature")
+      .attr("d", path)
+      .attr("fill", d => SEQ[gdpClass(d.properties.perofGDP)]);
+
+    gLines.selectAll("path").data(regions).join("path").attr("class", "region-line").attr("d", path);
+
+    const labels = gLabels.selectAll("text")
+      .data(regions)
+      .join("text")
+      .attr("class", "region-label")
+      .attr("transform", d => `translate(${labelPoint(d, path)})`)
+      .text(d => d.properties.REGION_ID);
+
+    // Zoom and pan
+    let k = 1;
+    const zoom = d3.zoom().scaleExtent([1, 14])
+      .translateExtent([[0, 0], [W, H]])
+      .on("zoom", e => {
+        k = e.transform.k;
+        root.attr("transform", e.transform);
+        labels.style("font-size", `${15 / Math.sqrt(k)}px`).style("stroke-width", `${3 / Math.sqrt(k)}px`);
+      });
+    svg.call(zoom);
+    document.getElementById("zoomIn").onclick = () => svg.transition().duration(250).call(zoom.scaleBy, 1.6);
+    document.getElementById("zoomOut").onclick = () => svg.transition().duration(250).call(zoom.scaleBy, 1 / 1.6);
+    document.getElementById("zoomReset").onclick = () => svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity);
+
+    // Tooltip
+    const showTip = (e, html) => {
+      const r = els.wrap.getBoundingClientRect();
+      els.tip.innerHTML = html;
+      els.tip.hidden = false;
+      els.tip.style.left = `${Math.min(Math.max(e.clientX - r.left, 90), r.width - 90)}px`;
+      els.tip.style.top = `${e.clientY - r.top}px`;
+    };
+    const hideTip = () => { els.tip.hidden = true; };
+    const zoneTip = p => `<b>${p.Zone_Name}</b>${fmt(p.Area_km2, 2)} km²`;
+    const regionTip = p => `<b>${p.REGION_NAM}</b>${fmt(p.perofGDP)}% of GDP · ${fmt(p.Area, 2)} km²`;
+
+    zonePaths
+      .on("pointermove", (e, d) => showTip(e, zoneTip(d.properties)))
+      .on("pointerleave", hideTip)
+      .on("click", (e, d) => select(d.properties.OBJECTID));
+    regionPaths
+      .on("pointermove", (e, d) => showTip(e, regionTip(d.properties)))
+      .on("pointerleave", hideTip)
+      .on("click", (e, d) => select(d.properties.REGION_ID));
+    svg.on("click", e => { if (e.target === els.svg) select(null); });
+
+    function keyOf(d) { return state.layer === "zones" ? d.properties.OBJECTID : d.properties.REGION_ID; }
+
+    function select(key) {
+      state.selected = state.selected === key ? null : key;
+      render();
+    }
+
+    function renderList() {
+      const isZones = state.layer === "zones";
+      const data = isZones ? zones : regions.slice().sort((a, b) => b.properties.perofGDP - a.properties.perofGDP);
+      const maxVal = isZones ? d3.max(zones, d => d.properties.Area_km2) : d3.max(regions, d => d.properties.perofGDP);
+      els.listTitle.textContent = isZones ? "Nodal zones" : "Regions by share of GDP";
+      els.scaleBox.hidden = isZones;
+      els.rows.innerHTML = "";
+      data.forEach(d => {
+        const p = d.properties;
+        const key = keyOf(d);
+        const val = isZones ? p.Area_km2 : p.perofGDP;
+        const li = document.createElement("li");
+        li.className = "row";
+        li.tabIndex = 0;
+        li.setAttribute("role", "option");
+        li.setAttribute("aria-selected", String(state.selected === key));
+        li.innerHTML =
+          `<span class="sw" style="background:${isZones ? ZONE_COLORS[p.N_Rev_new] : SEQ[gdpClass(p.perofGDP)]}"></span>` +
+          `<span class="name">${isZones ? p.Zone_Name : p.REGION_NAM}</span>` +
+          `<span class="val">${isZones ? fmt(val, 2) + " km²" : fmt(val) + "%"}</span>` +
+          `<span class="bar"><i style="width:${(val / maxVal) * 100}%"></i></span>`;
+        li.onclick = () => select(key);
+        li.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(key); } };
+        li.onmouseenter = () => highlight(key);
+        li.onmouseleave = () => highlight(null);
+        els.rows.appendChild(li);
+      });
+      els.total.innerHTML = isZones
+        ? `<span>Total zoned area</span><b>${fmt(zoneTotal, 2)} km²</b>`
+        : `<span>Seven regions</span><b>${fmt(regionTotal, 2)} km²</b>`;
+    }
+
+    function renderDetail() {
+      const isZones = state.layer === "zones";
+      const d = (isZones ? zones : regions).find(f => keyOf(f) === state.selected);
+      if (!d) {
+        els.detail.innerHTML = `<p class="hint">Select a ${isZones ? "zone" : "region"} on the map or in the list.</p>`;
+        return;
+      }
+      const p = d.properties;
+      if (isZones) {
+        els.detail.innerHTML =
+          `<h3>${p.Zone_Name}</h3><dl>` +
+          `<dt>Area</dt><dd>${fmt(p.Area_km2, 2)} km²</dd>` +
+          `<dt>Share of zoned area</dt><dd>${fmt((p.Area_km2 / zoneTotal) * 100)}%</dd>` +
+          `<dt>Nodal review code</dt><dd>${p.N_Rev_new}</dd>` +
+          `<dt>Perimeter</dt><dd>${fmt(p.Shape_Length / 1000)} km</dd>` +
+          `</dl>`;
+      } else {
+        const rank = regions.slice().sort((a, b) => b.properties.perofGDP - a.properties.perofGDP).indexOf(d) + 1;
+        els.detail.innerHTML =
+          `<h3>${p.REGION_NAM}</h3><dl>` +
+          `<dt>Share of city GDP</dt><dd>${fmt(p.perofGDP)}%</dd>` +
+          `<dt>GDP rank</dt><dd>${rank} of ${regions.length}</dd>` +
+          `<dt>Area</dt><dd>${fmt(p.Area, 2)} km²</dd>` +
+          `<dt>Share of city area</dt><dd>${fmt((p.Area / regionTotal) * 100)}%</dd>` +
+          `<dt>Perimeter</dt><dd>${fmt(p.Shape_Length / 1000)} km</dd>` +
+          `</dl>`;
+      }
+    }
+
+    function highlight(hoverKey) {
+      const active = hoverKey ?? state.selected;
+      const paths = state.layer === "zones" ? zonePaths : regionPaths;
+      paths
+        .classed("dim", d => active != null && keyOf(d) !== active)
+        .classed("hot", d => active != null && keyOf(d) === active);
+    }
+
+    function render() {
+      const isZones = state.layer === "zones";
+      els.btnZones.setAttribute("aria-pressed", String(isZones));
+      els.btnRegions.setAttribute("aria-pressed", String(!isZones));
+      gZones.attr("display", isZones ? null : "none");
+      gRegions.attr("display", isZones ? "none" : null);
+      const showLines = !isZones || state.outlines;
+      gLines.attr("display", showLines ? null : "none");
+      gLabels.attr("display", showLines ? null : "none");
+      els.outlineToggle.hidden = !isZones;
+      els.chk.checked = state.outlines;
+      labels
+        .attr("fill", d => (!isZones && gdpClass(d.properties.perofGDP) >= 3) ? "#ffffff" : "#0d0d0d")
+        .attr("stroke", d => (!isZones && gdpClass(d.properties.perofGDP) >= 3) ? "#005470" : "#ffffff")
+        .attr("stroke-opacity", isZones ? 1 : 0.6);
+      els.caption.textContent = isZones
+        ? "Figure 1: City of Johannesburg nodal review zones. Source: CoJ Nodal Review and regional boundary layers (output.json). Areas are as recorded in the source data."
+        : "Figure 1: Share of City of Johannesburg GDP by region, from the perofGDP field. Shares sum to 100,1% through rounding. Source: CoJ regional boundary layer (output.json).";
+      renderList();
+      renderDetail();
+      highlight(null);
+    }
+
+    els.btnZones.onclick = () => { if (state.layer !== "zones") { state.layer = "zones"; state.selected = null; persist(); render(); } };
+    els.btnRegions.onclick = () => { if (state.layer !== "regions") { state.layer = "regions"; state.selected = null; persist(); render(); } };
+    els.chk.onchange = () => { state.outlines = els.chk.checked; persist(); render(); };
+
+    // Scale legend
+    document.getElementById("scale").innerHTML = SEQ.map(c => `<span style="background:${c}"></span>`).join("");
+    document.getElementById("scaleLabels").innerHTML = SEQ_LABELS.map(l => `<span>${l}</span>`).join("");
+
+    render();
+  }
+
+  // Place a label inside the polygon: the centroid if it falls inside, else the largest ring's interior point.
+  function labelPoint(f, path) {
+    const c = path.centroid(f);
+    const polys = f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates;
+    const proj = path.projection();
+    const big = polys.map(p => p[0].map(proj)).sort((a, b) => Math.abs(d3.polygonArea(b)) - Math.abs(d3.polygonArea(a)))[0];
+    if (d3.polygonContains(big, c)) return c;
+    const [y0, y1] = d3.extent(big, p => p[1]);
+    const y = (y0 + y1) / 2;
+    const xs = [];
+    for (let i = 0, n = big.length, j = n - 1; i < n; j = i++) {
+      const [ax, ay] = big[i], [bx, by] = big[j];
+      if ((ay > y) !== (by > y)) xs.push(ax + (y - ay) / (by - ay) * (bx - ax));
+    }
+    xs.sort((a, b) => a - b);
+    let best = [c[0], y], w = 0;
+    for (let i = 0; i + 1 < xs.length; i += 2) if (xs[i + 1] - xs[i] > w) { w = xs[i + 1] - xs[i]; best = [(xs[i] + xs[i + 1]) / 2, y]; }
+    return best;
+  }
+})();
+</script>

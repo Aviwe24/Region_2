@@ -1,0 +1,584 @@
+<title>Vrededorp Transect Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: a code document. Lettered tables with one column per transect zone, each rule next to the diagram that draws it. */
+:root {
+  --paper: #F4F3EE;
+  --sheet: #FFFFFF;
+  --ink: #1F2128;
+  --ink-2: #555A66;
+  --ink-3: #8A8F99;
+  --rule: #D9D8D0;
+  --accent: #6A4BA6;
+  --accent-soft: #EEE8F8;
+  --t1: #3F7A3B; --t2: #93B356; --t3: #E3C84B; --t4: #E39A35; --t5: #B8432F; --t6: #7A3328; --sd: #4F6F9A;
+  --t4-soft: #FBEBD3; --t5-soft: #F6DED8; --t6-soft: #EEDCD8;
+  --green-soft: #DCEAD7;
+  --glass: #CFE0EA;
+  --ok: #2D7A47; --ok-soft: #DDEFE3;
+  --f-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #15161A; --sheet: #1D1F25; --ink: #E8E8EA; --ink-2: #A9ADB7; --ink-3: #7C808A; --rule: #30333B;
+    --accent: #A98EE3; --accent-soft: #2A2340;
+    --t1: #6FAF62; --t2: #B5CF76; --t3: #E9D36A; --t4: #EDAE55; --t5: #E07A62; --t6: #C46E5F; --sd: #7F9DC6;
+    --t4-soft: #3A2C17; --t5-soft: #3B221D; --t6-soft: #34221F;
+    --green-soft: #22352A; --glass: #2B3C47; --ok: #72CC91; --ok-soft: #1D3527;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #15161A; --sheet: #1D1F25; --ink: #E8E8EA; --ink-2: #A9ADB7; --ink-3: #7C808A; --rule: #30333B;
+  --accent: #A98EE3; --accent-soft: #2A2340;
+  --t1: #6FAF62; --t2: #B5CF76; --t3: #E9D36A; --t4: #EDAE55; --t5: #E07A62; --t6: #C46E5F; --sd: #7F9DC6;
+  --t4-soft: #3A2C17; --t5-soft: #3B221D; --t6-soft: #34221F;
+  --green-soft: #22352A; --glass: #2B3C47; --ok: #72CC91; --ok-soft: #1D3527;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 1.0625rem; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3, h4 { font-family: var(--f-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 750; letter-spacing: -0.015em; }
+h3 { font-size: 1.2rem; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-family: var(--f-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-2); }
+.muted { color: var(--ink-2); }
+.small { font-size: 0.92rem; }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 28px; padding-block: 40px 96px; display: grid; gap: 72px; }
+section { display: grid; gap: 20px; min-width: 0; }
+.head { display: grid; gap: 8px; max-width: 70ch; }
+.head p { color: var(--ink-2); }
+.code-no { font-family: var(--f-mono); font-size: 0.8rem; font-weight: 600; color: var(--ink-2); }
+
+/* Masthead */
+.mast { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 36px; align-items: end; padding-bottom: 28px; border-bottom: 3px double var(--ink); }
+.mast h1 { font-size: clamp(2.3rem, 6vw, 4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 0.98; margin: 10px 0 16px; }
+.lede { font-size: 1.15rem; line-height: 1.5; max-width: 58ch; }
+.notice { border: 1.5px solid var(--ink); background: var(--sheet); padding: 14px 16px; display: grid; gap: 6px; font-size: 0.95rem; }
+.notice b { font-family: var(--f-display); }
+.tzbar { display: flex; height: 10px; margin-top: 10px; }
+.tzbar span { flex: 1; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--f-display); font-size: 0.92rem; }
+.toc a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--rule); }
+.toc a:hover { color: var(--ink); }
+
+.prose { max-width: 68ch; display: grid; gap: 12px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0 28px; }
+.facts div { padding: 10px 0; border-top: 1px solid var(--rule); display: grid; gap: 2px; }
+.facts b { font-family: var(--f-display); }
+
+.panel { background: var(--sheet); border: 1px solid var(--rule); padding: 18px; min-width: 0; }
+.scroll { overflow-x: auto; }
+svg { display: block; }
+.fig-cap { font-family: var(--f-mono); font-size: 0.74rem; color: var(--ink-2); margin-top: 8px; }
+
+/* Zone chips */
+.tz { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; padding: 2px 8px 2px 6px; border-left: 6px solid var(--c); background: var(--paper); border-radius: 0 4px 4px 0; white-space: nowrap; }
+
+/* Correspondence */
+.corr { display: grid; grid-template-columns: repeat(7, minmax(120px, 1fr)); gap: 0; min-width: 860px; }
+.corr div { padding: 10px 10px 12px; border-top: 8px solid var(--c); border-right: 1px solid var(--rule); display: grid; gap: 4px; align-content: start; }
+.corr div:last-child { border-right: 0; }
+.corr .z { font-family: var(--f-display); font-weight: 700; }
+.corr .j { font-size: 0.88rem; color: var(--ink-2); }
+
+/* Summary table */
+.tbl-wrap { overflow-x: auto; background: var(--sheet); border: 1px solid var(--rule); }
+table { border-collapse: collapse; width: 100%; font-size: 0.93rem; min-width: 720px; }
+th, td { text-align: left; vertical-align: top; padding: 8px 12px; border-bottom: 1px solid var(--rule); }
+thead th { font-family: var(--f-display); font-size: 0.95rem; border-top: 8px solid var(--c, var(--ink)); background: var(--sheet); }
+thead th small { display: block; font-family: var(--f-mono); font-size: 0.7rem; font-weight: 500; color: var(--ink-2); letter-spacing: 0.03em; }
+tbody th { font-family: var(--f-body); font-weight: 400; color: var(--ink); width: 26%; }
+tr.grp th { font-family: var(--f-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); background: var(--paper); padding-top: 10px; }
+td.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 0.88rem; }
+.y { font-family: var(--f-mono); font-size: 0.78rem; font-weight: 600; color: var(--ok); background: var(--ok-soft); padding: 1px 7px; border-radius: 3px; }
+.n { font-family: var(--f-mono); font-size: 0.78rem; color: var(--ink-3); }
+.flag { display: block; font-size: 0.8rem; color: var(--ink-2); margin-top: 3px; font-style: italic; }
+
+/* Diagram grids */
+.dgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.dcard { background: var(--sheet); border: 1px solid var(--rule); padding: 14px; display: grid; gap: 8px; align-content: start; }
+.dcard h3 { font-size: 1.02rem; }
+.dcard p { font-size: 0.92rem; line-height: 1.45; }
+.dcard svg { width: 100%; height: auto; background: var(--paper); }
+.zrow { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* Diagram classes */
+.g-ground { stroke: var(--ink); stroke-width: 1.5; }
+.g-bldg { fill: var(--ink); }
+.g-bldg-2 { fill: var(--ink-3); }
+.g-line { stroke: var(--ink); stroke-width: 1.2; fill: none; }
+.g-fl { stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 4 3; fill: none; }
+.g-lot { fill: var(--sheet); stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 4 3; }
+.g-street { fill: var(--rule); }
+.g-green { fill: var(--green-soft); stroke: var(--t1); stroke-width: 0.8; }
+.g-glass { fill: var(--glass); stroke: var(--ink); stroke-width: 0.8; }
+.g-tree { fill: var(--t1); opacity: 0.85; }
+.g-trunk { stroke: var(--ink-2); stroke-width: 2; }
+.g-person { fill: none; stroke: var(--ink-2); stroke-width: 1.4; }
+.g-label { fill: var(--ink-2); font: 500 9px var(--f-mono); }
+.g-label-b { fill: var(--ink); font: 700 11px var(--f-display); }
+.g-big { fill: var(--ink); font: 700 15px var(--f-display); }
+.g-park { fill: var(--rule); stroke: var(--ink-3); stroke-width: 0.8; }
+
+/* Zone sheets */
+.sheet { background: var(--sheet); border: 1px solid var(--rule); border-top: 10px solid var(--c); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr); gap: 0; break-inside: avoid; }
+.sheet > div { padding: 16px 18px; min-width: 0; display: grid; gap: 10px; align-content: start; }
+.sheet > div + div { border-left: 1px solid var(--rule); }
+.sheet-title { grid-column: 1 / -1; border-bottom: 1px solid var(--rule); display: flex !important; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; }
+.sheet-title h3 { font-size: 1.5rem; }
+.sheet-title h3 span { font-family: var(--f-mono); font-size: 0.95rem; color: var(--ink-2); margin-right: 8px; }
+.sheet svg { width: 100%; height: auto; }
+.sheet dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 12px; font-size: 0.92rem; }
+.sheet dt { font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-2); padding-top: 3px; }
+.sheet dd { margin: 0; }
+.sheet .eg { background: var(--paper); padding: 10px 12px; font-size: 0.92rem; }
+.sheet .eg b { font-family: var(--f-display); }
+
+.use { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.use > div { background: var(--sheet); border: 1px solid var(--rule); padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+.use ol, .use ul { margin: 0; padding-left: 1.2em; display: grid; gap: 5px; font-size: 0.95rem; }
+.sources { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size: 0.93rem; max-width: 85ch; }
+.foot { border-top: 3px double var(--ink); padding-top: 12px; font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-2); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+
+@media (max-width: 900px) {
+  .mast { grid-template-columns: minmax(0, 1fr); }
+  .sheet { grid-template-columns: minmax(0, 1fr); }
+  .sheet > div + div { border-left: 0; border-top: 1px solid var(--rule); }
+}
+@media (max-width: 600px) {
+  .wrap { padding-inline: 16px; gap: 56px; }
+  body { font-size: 1rem; }
+}
+@media print {
+  .toc { display: none; }
+  .sheet, .dcard { break-inside: avoid; }
+}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <span class="eyebrow">Reference example · SmartCode style · Vrededorp panels</span>
+      <h1>Vrededorp Transect Code</h1>
+      <p class="lede">What a SmartCode-style form-based code looks like, worked as an example for Vrededorp. It shows how a code turns typologies into rules: where a building sits on its stand, how high it goes, and how it meets the street.</p>
+    </div>
+    <div class="notice" role="note">
+      <b>Teaching example, not an adopted code</b>
+      <span>The structure and terms follow the model SmartCode. The numbers are our own metric calibration for the studio, set against the Nodal Review targets. They are not the official SmartCode text or City of Johannesburg rules.</span>
+      <div class="tzbar" aria-hidden="true"><span style="background:var(--t1)"></span><span style="background:var(--t2)"></span><span style="background:var(--t3)"></span><span style="background:var(--t4)"></span><span style="background:var(--t5)"></span><span style="background:var(--t6)"></span><span style="background:var(--sd)"></span></div>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <a href="#about">What the SmartCode is</a><a href="#transect">The transect</a><a href="#plan">Regulating plan</a><a href="#summary">Summary table</a><a href="#disposition">Building disposition</a><a href="#frontages">Private frontages</a><a href="#sheets">Zone sheets</a><a href="#panel">Using it on the panel</a><a href="#sources">Sources</a>
+  </nav>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="head">
+      <span class="code-no">1</span>
+      <h2>What the SmartCode is</h2>
+    </div>
+    <div class="prose">
+      <p>The SmartCode is a model form-based code first written by Duany Plater-Zyberk &amp; Company and now kept by the Center for Applied Transect Studies, which offers it free for towns to adapt. It comes out of the New Urbanism: Andrés Duany and Elizabeth Plater-Zyberk co-founded the Congress for the New Urbanism, which promotes the transect and form-based codes.</p>
+      <p>Conventional zoning separates land uses and controls density. A form-based code controls the physical form of buildings and how they meet the street, and lets uses mix. The SmartCode organises those rules along a rural-to-urban transect, and every town calibrates its own numbers.</p>
+    </div>
+    <div class="facts">
+      <div><b>Organised by place</b><span class="muted">Six transect zones, T1 to T6, plus special districts.</span></div>
+      <div><b>Regulates form</b><span class="muted">Building disposition, setbacks, height, frontage and parking placement.</span></div>
+      <div><b>Uses tables</b><span class="muted">One column per zone, so a rule reads across the transect at a glance.</span></div>
+      <div><b>Calibrated locally</b><span class="muted">The template has blanks and defaults; each place sets its own numbers.</span></div>
+    </div>
+  </section>
+
+  <!-- TRANSECT -->
+  <section id="transect">
+    <div class="head">
+      <span class="code-no">2</span>
+      <h2>The transect, and how Johannesburg’s zones line up</h2>
+      <p>The transect runs from nature to the city centre. The Nodal Review’s zone names echo it closely. The pairing below is our reading for teaching; the City’s rules are not the SmartCode’s.</p>
+    </div>
+    <div class="panel scroll"><div id="transect-fig" style="min-width:860px"></div></div>
+    <div class="scroll">
+      <div class="corr" aria-label="Transect zones and the Nodal Review zones they resemble">
+        <div style="--c:var(--t1)"><span class="z">T1 Natural</span><span class="j">Beyond the Urban Development Boundary</span></div>
+        <div style="--c:var(--t2)"><span class="z">T2 Rural</span><span class="j">Peri-Urban Zone</span></div>
+        <div style="--c:var(--t3)"><span class="z">T3 Sub-Urban</span><span class="j">Sub-Urban Zone</span></div>
+        <div style="--c:var(--t4)"><span class="z">T4 General Urban</span><span class="j">General Urban Zone</span></div>
+        <div style="--c:var(--t5)"><span class="z">T5 Urban Center</span><span class="j">Regional and Metropolitan Nodes</span></div>
+        <div style="--c:var(--t6)"><span class="z">T6 Urban Core</span><span class="j">Inner City Node</span></div>
+        <div style="--c:var(--sd)"><span class="z">SD Special District</span><span class="j">LED Zone; civic and heritage sites</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAN -->
+  <section id="plan">
+    <div class="head">
+      <span class="code-no">3</span>
+      <h2>Regulating plan</h2>
+      <p>A SmartCode assigns zones street by street, not suburb by suburb. A node in the Nodal Review still contains quieter residential streets, so this example puts T4 on Vrededorp’s residential streets, T5 on its main street and T6 where it meets the Inner City Node.</p>
+    </div>
+    <div class="panel"><div id="plan-fig"></div><p class="fig-cap">Schematic only, not Vrededorp’s real street pattern. Each group draws its own regulating plan from the stand layout.</p></div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section id="summary">
+    <div class="head">
+      <span class="code-no">4</span>
+      <h2>Summary table</h2>
+      <p>The heart of a SmartCode: every rule in one table, one column per zone. This is our Vrededorp calibration, in metres. Notes in italics flag the calls a calibration has to make.</p>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Rule</th>
+            <th style="--c:var(--t4)">T4 General Urban<small>Residential streets</small></th>
+            <th style="--c:var(--t5)">T5 Urban Center<small>Main street, e.g. 14th Street</small></th>
+            <th style="--c:var(--t6)">T6 Urban Core<small>Edge of the Inner City Node</small></th></tr>
+        </thead>
+        <tbody>
+          <tr class="grp"><th colspan="4">a. Density</th></tr>
+          <tr><th>Net density</th><td class="num">80 du/ha min</td><td class="num">100 du/ha min</td><td class="num">150 du/ha min</td></tr>
+          <tr class="grp"><th colspan="4">b. Lot occupation</th></tr>
+          <tr><th>Stand width</th><td class="num">6–25 m</td><td class="num">6–40 m</td><td class="num">12–80 m</td></tr>
+          <tr><th>Lot coverage</th><td class="num">70% max</td><td class="num">80% max</td><td class="num">90% max</td></tr>
+          <tr><th>Frontage buildout at setback</th><td class="num">60% min</td><td class="num">80% min</td><td class="num">90% min</td></tr>
+          <tr class="grp"><th colspan="4">c. Building disposition</th></tr>
+          <tr><th>Edgeyard</th><td><span class="n">No</span><span class="flag">Small stands; keep the street wall.</span></td><td><span class="n">No</span></td><td><span class="n">No</span></td></tr>
+          <tr><th>Sideyard</th><td><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="n">No</span></td></tr>
+          <tr><th>Rearyard</th><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td></tr>
+          <tr><th>Courtyard</th><td><span class="y">Yes</span><span class="flag">On double stands and wider.</span></td><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td></tr>
+          <tr class="grp"><th colspan="4">d. Setbacks, principal building</th></tr>
+          <tr><th>Front</th><td class="num">1–3 m</td><td class="num">0–1 m</td><td class="num">0 m</td></tr>
+          <tr><th>Side</th><td class="num">0 m, or 1.5 m min</td><td class="num">0 m</td><td class="num">0 m</td></tr>
+          <tr><th>Rear</th><td class="num">3 m min</td><td class="num">3 m min</td><td class="num">0 m min</td></tr>
+          <tr class="grp"><th colspan="4">e. Building configuration</th></tr>
+          <tr><th>Height</th><td class="num">2 storeys min, 3 max<span class="flag">The Nodal Review asks for 3 min. Argue for 2 or 3.</span></td><td class="num">2 storeys min, 4 max<span class="flag">Keeps 14th Street’s scale.</span></td><td class="num">3 storeys min, 6 max</td></tr>
+          <tr><th>Ground floor, floor to floor</th><td class="num">3 m min</td><td class="num">4 m min, for shops</td><td class="num">4 m min</td></tr>
+          <tr class="grp"><th colspan="4">f. Private frontages</th></tr>
+          <tr><th>Common yard</th><td><span class="n">No</span></td><td><span class="n">No</span></td><td><span class="n">No</span></td></tr>
+          <tr><th>Porch and fence</th><td><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="n">No</span></td></tr>
+          <tr><th>Terrace or lightwell</th><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td></tr>
+          <tr><th>Forecourt</th><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td></tr>
+          <tr><th>Stoop (stoep)</th><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td></tr>
+          <tr><th>Shopfront and awning</th><td><span class="y">Yes</span><span class="flag">Corner stands only.</span></td><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td></tr>
+          <tr><th>Gallery</th><td><span class="n">No</span></td><td><span class="y">Yes</span><span class="flag">Expected on 14th Street, after its old verandas.</span></td><td><span class="y">Yes</span></td></tr>
+          <tr><th>Arcade</th><td><span class="n">No</span></td><td><span class="n">No</span></td><td><span class="y">Yes</span></td></tr>
+          <tr class="grp"><th colspan="4">g. Parking</th></tr>
+          <tr><th>Location</th><td>Third layer</td><td>Third layer</td><td>Third layer or under the building</td></tr>
+          <tr><th>Bays</th><td class="num">1 per home max</td><td class="num">1 per home max; none for shops</td><td class="num">1 per home max</td></tr>
+          <tr class="grp"><th colspan="4">h. Missing middle types from the cards</th></tr>
+          <tr><th>Permitted types</th><td>Semi-detached pair, fourplex, row houses, backyard yard and micro block, garden cottages</td><td>Live-work shophouse, courtyard walk-up, row houses with stoeps</td><td>Courtyard walk-up of 4–6 storeys, shophouse rows, mid-rise block</td></tr>
+          <tr class="grp"><th colspan="4">i. Uses</th></tr>
+          <tr><th>Ground floor</th><td>Homes, home businesses; shops on corners</td><td>Shops, workshops, cafés</td><td>Shops, offices, services</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- DISPOSITION -->
+  <section id="disposition">
+    <div class="head">
+      <span class="code-no">5</span>
+      <h2>Building disposition</h2>
+      <p>Where the building sits on its stand. The SmartCode defines four dispositions; each zone permits some of them. Street at the bottom of each plan.</p>
+    </div>
+    <div class="dgrid" id="disp-grid"></div>
+  </section>
+
+  <!-- FRONTAGES -->
+  <section id="frontages">
+    <div class="head">
+      <span class="code-no">6</span>
+      <h2>Private frontages</h2>
+      <p>How the building meets the street: the space between the facade and the frontage line, and the elements in it. Sections run from the street on the left to the building on the right; the dashed line is the frontage line.</p>
+    </div>
+    <div class="dgrid" id="front-grid"></div>
+  </section>
+
+  <!-- SHEETS -->
+  <section id="sheets">
+    <div class="head">
+      <span class="code-no">7</span>
+      <h2>Zone sheets</h2>
+      <p>A SmartCode gives each zone a sheet that puts building placement, height and parking on one page. Each sheet here uses one of the panel’s Vrededorp stands.</p>
+    </div>
+    <div id="sheets-list" style="display:grid;gap:18px"></div>
+  </section>
+
+  <!-- PANEL -->
+  <section id="panel">
+    <div class="head">
+      <span class="code-no">8</span>
+      <h2>Using it on the panel</h2>
+      <p>Write your group’s rules in this format in panel column B, then show that each of your three typologies obeys them.</p>
+    </div>
+    <div class="use">
+      <div>
+        <h3>Your code, in five rules</h3>
+        <ol>
+          <li><b>Zone:</b> which transect zone each of your stands sits in, and why.</li>
+          <li><b>Disposition:</b> which of the four your types use.</li>
+          <li><b>Setbacks and buildout:</b> front, side and rear, in metres.</li>
+          <li><b>Height:</b> storeys min and max, and the ground floor height.</li>
+          <li><b>Frontage:</b> which private frontages, and where parking goes.</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Questions for the crit</h3>
+        <ul>
+          <li>Does every type obey the rules your group wrote?</li>
+          <li>Do the rules reach the Nodal Review targets of 80 or 100 du/ha?</li>
+          <li>Where did you break a rule on purpose, and what did it buy?</li>
+          <li>What do your rules keep of 14th Street and Fietas?</li>
+        </ul>
+      </div>
+      <div>
+        <h3>A real calibration, for comparison</h3>
+        <p class="small">Fitchburg, Wisconsin calibrated its SmartCode in feet:</p>
+        <ul>
+          <li><b>T4:</b> front setback 6–18 ft (about 1.8–5.5 m), frontage buildout 60% min, lot coverage 70% max, 3 storeys max.</li>
+          <li><b>T5:</b> front setback 2–12 ft (about 0.6–3.7 m), frontage buildout 80% min, 2 storeys min and 4 max in neighbourhood developments.</li>
+        </ul>
+        <p class="small muted">Other towns set different numbers; that is what calibration means.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOURCES -->
+  <section id="sources">
+    <div class="head">
+      <span class="code-no">9</span>
+      <h2>Sources</h2>
+    </div>
+    <ol class="sources">
+      <li>Center for Applied Transect Studies. <a href="https://transect.org/codes.html" target="_blank" rel="noopener">Codes and manuals</a>, including the model SmartCode Version 9.2 and the <a href="https://transect.org/docs/SCv10_Framework-reduced.pdf" target="_blank" rel="noopener">SmartCode v10 framework</a>.</li>
+      <li>Duany, A., Sorlien, S. and Wright, W. <em>SmartCode Version 9.2</em>. Ithaca, NY: The Town Paper.</li>
+      <li>Congress for the New Urbanism. <a href="https://www.cnu.org/node/4349" target="_blank" rel="noopener">The “smart code” is coming</a>.</li>
+      <li>City of Fitchburg, Wisconsin. <a href="https://fitchburgwi.gov/DocumentCenter/View/1566/T4" target="_blank" rel="noopener">T4 transect standards quick sheet</a> and <a href="https://www.municode.com/webcontent/14843/Article%205%20-%20Transect%20Zoning%20Regulations.pdf" target="_blank" rel="noopener">SmartCode Article 5</a>.</li>
+      <li>City of El Paso, Texas. <a href="https://www.elpasotexas.gov/assets/Documents/CoEP/Planning-and-Inspections/Planning-Divisions/Long-Range/Smart-Code/El-Paso-SmartCode-Amd09032019.pdf" target="_blank" rel="noopener">El Paso SmartCode, amended 2019</a>, an example of zone sheets.</li>
+      <li>Wikipedia. <a href="https://en.wikipedia.org/wiki/SmartCode" target="_blank" rel="noopener">SmartCode</a>.</li>
+      <li>City of Johannesburg (2020). Nodal Review, for the 80 and 100 du/ha targets used in the calibration.</li>
+    </ol>
+    <div class="foot">
+      <span>Vrededorp Transect Code · teaching example for the Building in the Middle studio</span>
+      <span>Not an adopted code</span>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const svg = (w, h, body, label, extra = "") => `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}" ${extra}>${body}</svg>`;
+
+  // ---------- Transect section ----------
+  function transect() {
+    const zones = [
+      { id: "T1", name: "Natural", c: "--t1" }, { id: "T2", name: "Rural", c: "--t2" }, { id: "T3", name: "Sub-Urban", c: "--t3" },
+      { id: "T4", name: "General Urban", c: "--t4" }, { id: "T5", name: "Urban Center", c: "--t5" }, { id: "T6", name: "Urban Core", c: "--t6" },
+      { id: "SD", name: "Special District", c: "--sd" }
+    ];
+    const W = 1200, gy = 200, st = 14, out = [];
+    const colW = [168, 168, 168, 168, 168, 168, 160];
+    const tree = (x, h = 34, r = 15) => `<line class="g-trunk" x1="${x}" y1="${gy}" x2="${x}" y2="${gy - h + r}"/><circle class="g-tree" cx="${x}" cy="${gy - h}" r="${r}"/>`;
+    const bldg = (x, w, s, roof, cls = "g-bldg") => {
+      const h = s * st;
+      let o = `<rect class="${cls}" x="${x}" y="${gy - h}" width="${w}" height="${h}"/>`;
+      if (roof) o += `<polygon class="${cls}" points="${x},${gy - h} ${x + w / 2},${gy - h - 10} ${x + w},${gy - h}"/>`;
+      return o;
+    };
+    let x0 = 0;
+    const draw = [
+      x => tree(x + 30, 40, 18) + tree(x + 70, 30, 13) + tree(x + 105, 46, 20) + tree(x + 145, 34, 15),
+      x => tree(x + 25, 36, 15) + bldg(x + 60, 34, 1, true) + bldg(x + 100, 22, 1, true, "g-bldg-2") + tree(x + 145, 40, 17),
+      x => bldg(x + 14, 40, 1, true) + tree(x + 72, 34, 14) + bldg(x + 96, 44, 2, true) + tree(x + 154, 30, 12),
+      x => bldg(x + 8, 34, 2, true) + bldg(x + 46, 36, 2, true) + bldg(x + 86, 22, 3, false) + bldg(x + 108, 22, 3, false) + bldg(x + 130, 22, 3, false) + tree(x + 160, 26, 9),
+      x => bldg(x + 6, 40, 4, false) + bldg(x + 46, 44, 3, false) + bldg(x + 90, 36, 4, false) + bldg(x + 126, 38, 3, false) +
+        `<rect class="g-bldg-2" x="${x + 46}" y="${gy - 16}" width="44" height="3"/>`,
+      x => bldg(x + 6, 46, 8, false) + bldg(x + 52, 40, 6, false) + bldg(x + 92, 36, 10, false) + bldg(x + 128, 36, 7, false),
+      x => bldg(x + 20, 120, 2, false, "g-bldg-2") + tree(x + 150, 30, 11)
+    ];
+    zones.forEach((z, i) => {
+      out.push(draw[i](x0));
+      out.push(`<rect x="${x0}" y="${gy + 4}" width="${colW[i] - 4}" height="16" style="fill:var(${z.c})"/>`);
+      out.push(`<text class="g-big" x="${x0}" y="${gy + 42}">${z.id}</text><text class="g-label" x="${x0 + 30}" y="${gy + 41}" style="font-size:12px">${z.name}</text>`);
+      x0 += colW[i];
+    });
+    out.push(`<line class="g-ground" x1="0" y1="${gy}" x2="${W}" y2="${gy}"/>`);
+    $("#transect-fig").innerHTML = svg(W, 260, out.join(""), "The rural-to-urban transect from T1 Natural to T6 Urban Core, plus a special district, drawn as a section with buildings growing taller and closer together", 'style="width:100%;height:auto"');
+  }
+
+  // ---------- Regulating plan ----------
+  function plan() {
+    const W = 760, H = 440, out = [];
+    out.push(`<defs><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" class="g-line" style="stroke-width:1.2"/></pattern></defs>`);
+    out.push(`<rect x="0" y="0" width="${W}" height="${H}" class="g-street"/>`);
+    const cols = [[30, 230], [252, 452], [474, 674]];
+    const rows = [[40, 140], [162, 262], [284, 384]];
+    const zoneOf = (ci) => ci === 2 ? "t6" : "t4";
+    rows.forEach((r, ri) => cols.forEach((c, ci) => {
+      const z = zoneOf(ci);
+      out.push(`<rect x="${c[0]}" y="${r[0]}" width="${c[1] - c[0]}" height="${r[1] - r[0]}" style="fill:var(--${z});fill-opacity:0.32"/>`);
+      if (ci < 2 && ri === 0) out.push(`<rect x="${c[0]}" y="${r[1] - 30}" width="${c[1] - c[0]}" height="30" style="fill:var(--t5)"/>`);
+      if (ci < 2 && ri === 1) out.push(`<rect x="${c[0]}" y="${r[0]}" width="${c[1] - c[0]}" height="30" style="fill:var(--t5)"/>`);
+      if (ci === 2) out.push(`<rect x="${c[0]}" y="${r[0]}" width="${c[1] - c[0]}" height="${r[1] - r[0]}" style="fill:var(--t6);fill-opacity:0.55"/>`);
+      for (let k = 1; k < 8; k++) {
+        const x = c[0] + k * (c[1] - c[0]) / 8;
+        out.push(`<line x1="${x}" y1="${r[0]}" x2="${x}" y2="${r[1]}" style="stroke:var(--sheet);stroke-width:0.8;opacity:0.7"/>`);
+      }
+      out.push(`<line x1="${c[0]}" y1="${(r[0] + r[1]) / 2}" x2="${c[1]}" y2="${(r[0] + r[1]) / 2}" style="stroke:var(--sheet);stroke-width:1.2;opacity:0.8"/>`);
+    }));
+    out.push(`<rect x="300" y="196" width="104" height="58" fill="url(#hatch)" style="stroke:var(--ink);stroke-width:1.2"/>`);
+    out.push(`<rect x="70" y="300" width="56" height="44" style="fill:var(--sd)"/>`);
+    out.push(`<text class="g-label-b" x="${W / 2 - 230}" y="156" style="font-size:12px">MAIN STREET, e.g. 14th Street</text>`);
+    out.push(`<text class="g-big" x="120" y="95">T4</text><text class="g-big" x="340" y="95">T4</text><text class="g-big" x="560" y="95" style="fill:var(--sheet)">T6</text>`);
+    out.push(`<text class="g-big" x="120" y="183" style="fill:var(--sheet)">T5</text><text class="g-big" x="340" y="133" style="fill:var(--sheet)">T5</text><text class="g-big" x="120" y="240">T4</text><text class="g-big" x="560" y="225" style="fill:var(--sheet)">T6</text><text class="g-big" x="560" y="345" style="fill:var(--sheet)">T6</text>`);
+    out.push(`<text class="g-big" x="340" y="345">T4</text><text class="g-big" x="150" y="330">T4</text>`);
+    out.push(`<text class="g-label-b" x="74" y="358">SD civic</text>`);
+    out.push(`<text class="g-label-b" x="300" y="277">↑ Cleared site: infill</text>`);
+    out.push(`<text class="g-label-b" x="690" y="30" text-anchor="end">Inner City Node edge →</text>`);
+    out.push(`<g transform="translate(728 300)"><polygon points="0,-22 7,0 0,-5 -7,0" style="fill:var(--ink)"/><text class="g-label-b" x="0" y="14" text-anchor="middle">N</text></g>`);
+    const legend = [["--t4", "T4 General Urban"], ["--t5", "T5 Urban Center"], ["--t6", "T6 Urban Core"], ["--sd", "SD Special District"]];
+    const lg = legend.map(([c, t], i) => `<rect x="${30 + i * 185}" y="${H - 28 + 6}" width="14" height="14" style="fill:var(${c})"/><text class="g-label" x="${50 + i * 185}" y="${H - 28 + 17}" style="font-size:11px">${t}</text>`).join("");
+    $("#plan-fig").innerHTML = svg(W, H + 10, out.join("") + `<rect x="0" y="${H - 28}" width="${W}" height="38" style="fill:var(--sheet)"/>` + lg,
+      "Schematic regulating plan: T4 blocks on residential streets, T5 frontages along a main street, T6 blocks on the eastern edge, a civic special district and a hatched cleared site for infill", 'style="width:100%;height:auto"');
+  }
+
+  // ---------- Disposition ----------
+  function disposition() {
+    const lot = `<rect class="g-street" x="0" y="136" width="120" height="14"/><text class="g-label" x="60" y="146" text-anchor="middle">STREET</text><rect class="g-lot" x="20" y="10" width="80" height="124"/>`;
+    const items = [
+      { name: "Edgeyard", body: `<rect class="g-bldg" x="36" y="46" width="48" height="52"/>`,
+        text: "Sits in the middle of its lot with setbacks on all sides. The least urban disposition: the front and side yards loosen the street wall.", z: [] },
+      { name: "Sideyard", body: `<rect class="g-bldg" x="20" y="36" width="54" height="86"/>`,
+        text: "Sits against one side lot line and keeps a yard on the other side. Two together, mirrored, read as a semi-detached pair.", z: ["t4"] },
+      { name: "Rearyard", body: `<rect class="g-bldg" x="20" y="74" width="80" height="58"/>`,
+        text: "Fills the full width of the frontage and leaves the yard at the back. Its continuous wall shapes the street most strongly.", z: ["t4", "t5", "t6"] },
+      { name: "Courtyard", body: `<rect class="g-bldg" x="20" y="12" width="80" height="120"/><rect class="g-green" x="40" y="40" width="40" height="56"/>`,
+        text: "Fills the lot edges and holds one or more private courtyards inside its footprint.", z: ["t4", "t5", "t6"] }
+    ];
+    $("#disp-grid").innerHTML = items.map(it => `<article class="dcard">
+      ${svg(120, 150, lot + it.body, it.name + " plan")}
+      <h3>${it.name}</h3><p>${it.text}</p>
+      <div class="zrow">${it.z.length ? it.z.map(z => `<span class="tz" style="--c:var(--${z})">${z.toUpperCase()}</span>`).join("") : `<span class="n">Not permitted in this calibration</span>`}</div>
+    </article>`).join("");
+  }
+
+  // ---------- Frontages ----------
+  function frontages() {
+    const G = 100, FL = 70;
+    const base = `<line class="g-ground" x1="0" y1="${G}" x2="200" y2="${G}"/><line class="g-fl" x1="${FL}" y1="20" x2="${FL}" y2="112"/>` +
+      `<circle class="g-person" cx="38" cy="80" r="3.5"/><line class="g-person" x1="38" y1="84" x2="38" y2="96"/><line class="g-person" x1="38" y1="96" x2="34" y2="${G}"/><line class="g-person" x1="38" y1="96" x2="42" y2="${G}"/>` +
+      `<text class="g-label" x="4" y="116">PUBLIC</text><text class="g-label" x="${FL + 4}" y="116">PRIVATE</text>`;
+    const items = [
+      { name: "Common yard", z: [], text: "The facade sits far back behind an open, unfenced planted yard that runs into its neighbours’ yards.",
+        body: `<rect class="g-green" x="${FL}" y="96" width="80" height="4"/><circle class="g-tree" cx="110" cy="74" r="12"/><line class="g-trunk" x1="110" y1="86" x2="110" y2="${G}"/><rect class="g-bldg" x="150" y="44" width="50" height="56"/>` },
+      { name: "Porch and fence", z: ["t4"], text: "The facade is set back, with a porch in the setback and a fence on the frontage line that keeps the street edge.",
+        body: `<line class="g-line" x1="${FL + 2}" y1="88" x2="${FL + 2}" y2="${G}" style="stroke-width:2"/><line class="g-line" x1="${FL + 2}" y1="89" x2="96" y2="89"/><rect class="g-bldg-2" x="112" y="62" width="30" height="3"/><line class="g-line" x1="114" y1="65" x2="114" y2="${G}"/><rect class="g-bldg" x="142" y="40" width="58" height="60"/>` },
+      { name: "Terrace or lightwell", z: ["t4", "t5", "t6"], text: "The facade sits behind a raised terrace or a sunken lightwell that buffers ground-floor homes; a terrace can host a café.",
+        body: `<rect class="g-bldg-2" x="${FL}" y="88" width="34" height="12"/><polygon class="g-bldg-2" points="${FL - 8},${G} ${FL},${G} ${FL},92 ${FL - 4},92"/><rect class="g-bldg" x="104" y="38" width="96" height="62"/>` },
+      { name: "Forecourt", z: ["t4", "t5", "t6"], plan: true, text: "Plan view. Part of the facade sits on the frontage line and the middle steps back around a small court, often for an entrance.",
+        body: `<rect class="g-street" x="0" y="92" width="200" height="28"/><line class="g-fl" x1="0" y1="${G - 8}" x2="200" y2="${G - 8}"/><rect class="g-bldg" x="40" y="24" width="120" height="30"/><rect class="g-bldg" x="40" y="54" width="34" height="38"/><rect class="g-bldg" x="126" y="54" width="34" height="38"/><rect class="g-green" x="74" y="54" width="52" height="38"/><text class="g-label" x="100" y="110" text-anchor="middle">STREET</text>` },
+      { name: "Stoop (stoep)", z: ["t4", "t5", "t6"], text: "The ground floor is raised for privacy and reached by steps close to the frontage line. Vrededorp’s stoeps are the local version.",
+        body: `<polygon class="g-bldg-2" points="${FL},${G} ${FL},96 ${FL + 4},96 ${FL + 4},92 ${FL + 8},92 ${FL + 8},88 ${FL + 12},88 ${FL + 12},${G}"/><rect class="g-bldg" x="${FL + 12}" y="30" width="${118 - 12}" height="70"/><rect class="g-glass" x="${FL + 12}" y="62" width="4" height="24"/>` },
+      { name: "Shopfront and awning", z: ["t4", "t5", "t6"], text: "The facade sits on the frontage line with a large glazed ground floor at pavement level, and an awning over the pavement.",
+        body: `<rect class="g-bldg" x="${FL}" y="26" width="130" height="74"/><rect class="g-glass" x="${FL}" y="70" width="6" height="30"/><polygon class="g-bldg-2" points="${FL},66 ${FL - 34},74 ${FL - 34},77 ${FL},70"/>` },
+      { name: "Gallery", z: ["t5", "t6"], text: "A light colonnade and roof run over the pavement from a facade on the frontage line. 14th Street’s old verandas worked this way.",
+        body: `<rect class="g-bldg" x="${FL}" y="26" width="130" height="74"/><rect class="g-glass" x="${FL}" y="70" width="6" height="30"/><rect class="g-bldg-2" x="16" y="62" width="${FL - 16}" height="4"/><line class="g-line" x1="19" y1="66" x2="19" y2="${G}" style="stroke-width:2.2"/><line class="g-line" x1="16" y1="58" x2="${FL}" y2="58"/>` },
+      { name: "Arcade", z: ["t6"], text: "Upper floors extend over the pavement on columns, with the ground-floor facade on the frontage line.",
+        body: `<rect class="g-bldg" x="16" y="22" width="184" height="44"/><rect class="g-bldg" x="${FL}" y="66" width="130" height="34"/><rect class="g-glass" x="${FL}" y="70" width="6" height="30"/><rect class="g-bldg" x="16" y="66" width="5" height="34"/>` }
+    ];
+    $("#front-grid").innerHTML = items.map(it => `<article class="dcard">
+      ${svg(200, 120, (it.plan ? "" : base) + it.body, it.name + (it.plan ? " plan" : " section"))}
+      <h3>${it.name}</h3><p>${it.text}</p>
+      <div class="zrow">${it.z.length ? it.z.map(z => `<span class="tz" style="--c:var(--${z})">${z.toUpperCase()}</span>`).join("") : `<span class="n">Not permitted in this calibration</span>`}</div>
+    </article>`).join("");
+  }
+
+  // ---------- Zone sheets ----------
+  const SHEETS = [
+    { id: "T4", name: "General Urban", c: "t4", where: "Vrededorp’s residential streets",
+      stand: { code: "V1", w: 12.5, d: 20 }, front: [1, 3], side: 0, rear: 3, sMin: 2, sMax: 3, gf: 3, cover: "70% max", buildout: "60% min",
+      frontages: "Porch and fence, terrace, forecourt, stoep; shopfront on corners", density: "80 du/ha min",
+      eg: "<b>Example:</b> a three-storey block of stacked flats on V1: four homes behind one stoep, two parking bays in the third layer. 160 du/ha." },
+    { id: "T5", name: "Urban Center", c: "t5", where: "Main street, e.g. 14th Street",
+      stand: { code: "V3", w: 12.5, d: 20 }, front: [0, 1], side: 0, rear: 3, sMin: 2, sMax: 4, gf: 4, cover: "80% max", buildout: "80% min", gallery: true,
+      frontages: "Shopfront, gallery, terrace, forecourt, stoep", density: "100 du/ha min",
+      eg: "<b>Example:</b> the live-work shophouse on V3: a shop under a gallery over the pavement, three flats above in three storeys. 120 du/ha." },
+    { id: "T6", name: "Urban Core", c: "t6", where: "Edge of the Inner City Node",
+      stand: { code: "V4", w: 37.5, d: 40 }, front: [0, 0], side: 0, rear: 0, sMin: 3, sMax: 6, gf: 4, cover: "90% max", buildout: "90% min", gallery: true,
+      frontages: "Shopfront, gallery, arcade, forecourt, stoep, terrace", density: "150 du/ha min",
+      eg: "<b>Example:</b> the courtyard walk-up raised to five storeys on V4, with shops at the corner: 30 homes, 200 du/ha. Above four storeys, plan for a lift." }
+  ];
+
+  function placementSVG(s) {
+    const pad = 22, k = Math.min(200 / s.stand.w, 230 / s.stand.d);
+    const W = s.stand.w * k + pad * 2 + 70, H = s.stand.d * k + pad * 2 + 18;
+    const x0 = pad, y0 = pad, lw = s.stand.w * k, ld = s.stand.d * k, yF = y0 + ld;
+    const out = [];
+    out.push(`<rect class="g-street" x="0" y="${yF}" width="${W}" height="${H - yF}"/><text class="g-label" x="${x0 + lw / 2}" y="${yF + 14}" text-anchor="middle">STREET · FRONTAGE LINE</text>`);
+    out.push(`<rect class="g-lot" x="${x0}" y="${y0}" width="${lw}" height="${ld}"/>`);
+    const fMin = s.front[0] * k, fMax = s.front[1] * k, rear = s.rear * k;
+    const bTop = y0 + rear, bBot = yF - fMin;
+    out.push(`<rect x="${x0}" y="${bTop}" width="${lw}" height="${bBot - bTop}" style="fill:var(--${s.c}-soft);stroke:var(--${s.c});stroke-width:1.2"/>`);
+    if (fMax > fMin) out.push(`<rect x="${x0}" y="${yF - fMax}" width="${lw}" height="${fMax - fMin}" style="fill:var(--${s.c});opacity:0.35"/>`);
+    const l2 = yF - fMax - 6 * k;
+    out.push(`<line x1="${x0}" y1="${yF - fMax}" x2="${x0 + lw}" y2="${yF - fMax}" class="g-line" style="stroke-dasharray:3 3"/>`);
+    out.push(`<line x1="${x0}" y1="${l2}" x2="${x0 + lw}" y2="${l2}" class="g-line" style="stroke-dasharray:3 3"/>`);
+    const parkH = Math.min(5 * k, (l2 - y0) - 4);
+    if (parkH > 8) out.push(`<rect class="g-park" x="${x0 + 4}" y="${y0 + 3}" width="${Math.min(lw - 8, 5 * k)}" height="${parkH}"/><text class="g-label-b" x="${x0 + 4 + Math.min(lw - 8, 5 * k) / 2}" y="${y0 + 3 + parkH / 2 + 4}" text-anchor="middle">P</text>`);
+    const lx = x0 + lw + 6;
+    if (fMax > 0) out.push(`<text class="g-label" x="${lx}" y="${yF - fMax / 2 + 3}">1st layer</text>`);
+    out.push(`<text class="g-label" x="${lx}" y="${(yF - fMax + l2) / 2 + 3}">2nd layer, 6 m</text>`);
+    out.push(`<text class="g-label" x="${lx}" y="${(l2 + y0) / 2 + 3}">3rd layer</text>`);
+    out.push(`<text class="g-label" x="${x0}" y="${y0 - 8}">${s.stand.code} · ${s.stand.w} × ${s.stand.d} m</text>`);
+    return svg(f(W), f(H), out.join(""), `${s.id} building placement on stand ${s.stand.code}`);
+  }
+
+  function heightSVG(s) {
+    const W = 220, gy = 210, fh = 22, out = [];
+    out.push(`<line class="g-ground" x1="0" y1="${gy}" x2="${W}" y2="${gy}"/>`);
+    let y = gy;
+    for (let i = 0; i < s.sMax; i++) {
+      const h = i === 0 ? (s.gf >= 4 ? fh * 1.3 : fh) : fh;
+      const solid = i < s.sMin;
+      out.push(`<rect x="70" y="${f(y - h)}" width="110" height="${f(h)}" style="${solid ? `fill:var(--${s.c});opacity:0.85` : `fill:none;stroke:var(--${s.c});stroke-width:1.5;stroke-dasharray:4 3`}"/>`);
+      out.push(`<text class="g-label" x="62" y="${f(y - h / 2 + 3)}" text-anchor="end">${i + 1}</text>`);
+      y -= h;
+    }
+    if (s.gallery) out.push(`<rect class="g-bldg-2" x="34" y="${gy - fh * 1.3 + 2}" width="36" height="3"/><line class="g-line" x1="37" y1="${gy - fh * 1.3 + 5}" x2="37" y2="${gy}" style="stroke-width:2"/>`);
+    out.push(`<text class="g-label-b" x="186" y="${f(gy - 6)}">${s.sMin} min</text><text class="g-label-b" x="186" y="${f(y + 10)}">${s.sMax} max</text>`);
+    out.push(`<text class="g-label" x="70" y="${gy + 14}">street ←</text>`);
+    return svg(W, gy + 20, out.join(""), `${s.id} building height: ${s.sMin} storeys minimum, ${s.sMax} maximum`);
+  }
+  const f = n => +(+n).toFixed(1);
+
+  function sheets() {
+    $("#sheets-list").innerHTML = SHEETS.map(s => `<article class="sheet" style="--c:var(--${s.c})">
+      <div class="sheet-title"><h3><span>${s.id}</span>${s.name}</h3><span class="eyebrow">${s.where}</span></div>
+      <div><span class="eyebrow">Building placement</span>${placementSVG(s)}
+        <dl><dt>Front</dt><dd>${s.front[0] === s.front[1] ? s.front[0] + " m" : s.front[0] + "–" + s.front[1] + " m"}</dd><dt>Side</dt><dd>${s.id === "T4" ? "0 m, or 1.5 m min" : "0 m"}</dd><dt>Rear</dt><dd>${s.rear} m min</dd><dt>Coverage</dt><dd>${s.cover}</dd><dt>Buildout</dt><dd>${s.buildout}</dd></dl></div>
+      <div><span class="eyebrow">Building height</span>${heightSVG(s)}
+        <dl><dt>Storeys</dt><dd>${s.sMin} min, ${s.sMax} max</dd><dt>Ground floor</dt><dd>${s.gf} m min floor to floor</dd><dt>Density</dt><dd>${s.density}</dd></dl></div>
+      <div><span class="eyebrow">Frontage and parking</span>
+        <dl><dt>Frontages</dt><dd>${s.frontages}</dd><dt>Parking</dt><dd>${s.id === "T6" ? "Third layer or under the building" : "Third layer only"}, 1 bay per home max</dd></dl>
+        <p class="eg">${s.eg}</p></div>
+    </article>`).join("");
+  }
+
+  transect(); plan(); disposition(); frontages(); sheets();
+})();
+</script>
